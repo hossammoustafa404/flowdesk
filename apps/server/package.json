@@ -1,5 +1,5 @@
 {
-  "name": "@saas-kit/server",
+  "name": "@flowdesk/server",
   "version": "0.0.1",
   "private": true,
   "nx": {
@@ -108,15 +108,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@saas-kit/server:build",
+          "buildTarget": "@flowdesk/server:build",
           "runBuildTargetDependencies": true
         },
         "configurations": {
           "development": {
-            "buildTarget": "@saas-kit/server:build:development"
+            "buildTarget": "@flowdesk/server:build:development"
           },
           "production": {
-            "buildTarget": "@saas-kit/server:build:production"
+            "buildTarget": "@flowdesk/server:build:production"
           }
         }
       },
@@ -154,7 +154,7 @@
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
     "@prisma/instrumentation": "^7.9.0",
-    "@saas-kit/schemas": "*",
+    "@flowdesk/schemas": "*",
     "@thallesp/nestjs-better-auth": "^2.7.0",
     "better-auth": "^1.7.1",
     "bullmq": "^6.2.1",

@@ -4,7 +4,7 @@ import { cleanupOpenApiDoc } from 'nestjs-zod';
 
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('SaaS Kit API')
+    .setTitle('Flowdesk API')
     .setDescription(
       'REST API for application resources. Authentication routes are documented at /api/auth/reference.',
     )

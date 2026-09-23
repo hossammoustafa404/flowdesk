@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @saas-kit/server with Nx",
+      "name": "Debug @flowdesk/server with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@saas-kit/server"],
+      "runtimeArgs": ["nx", "serve", "@flowdesk/server"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },

@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@saas-kit/source"],
+    "customConditions": ["@flowdesk/source"],
     "noUncheckedSideEffectImports": false,
     "types": ["*"]
   }

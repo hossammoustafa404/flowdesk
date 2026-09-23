@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Health } from '@saas-kit/schemas';
+import type { Health } from '@flowdesk/schemas';
 
 @Injectable()
 export class GetHealthService {

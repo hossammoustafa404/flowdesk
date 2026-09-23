@@ -1,4 +1,4 @@
 import { createZodDto } from 'nestjs-zod';
-import { HealthSchema } from '@saas-kit/schemas';
+import { HealthSchema } from '@flowdesk/schemas';
 
 export class HealthDto extends createZodDto(HealthSchema) {}

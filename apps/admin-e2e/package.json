@@ -1,10 +1,10 @@
 {
-  "name": "@saas-kit/admin-e2e",
+  "name": "@flowdesk/admin-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@saas-kit/admin"
+      "@flowdesk/admin"
     ]
   }
 }

@@ -1,129 +1,160 @@
 import {
-  BarChart3,
-  Bell,
-  Lock,
-  Plug,
-  Users,
-  Workflow,
+  Headset,
+  LayoutDashboard,
+  Wrench,
   type LucideIcon,
 } from 'lucide-react';
 
-export const PRODUCT_NAME = 'Pulse';
+export const PRODUCT_NAME = 'Flowdesk';
 
-export interface LandingFeature {
-  icon: LucideIcon;
-  title: string;
-  description: string;
+/** Aligns with auth app routes — kept local so landing does not import the auth barrel. */
+export const LANDING_AUTH_HREFS = {
+  signIn: '/sign-in',
+  signUp: '/sign-up',
+} as const;
+
+export const LANDING_ROLE_ICONS: Record<
+  'owner' | 'dispatcher' | 'technician',
+  LucideIcon
+> = {
+  owner: LayoutDashboard,
+  dispatcher: Headset,
+  technician: Wrench,
+};
+
+export interface MockJobRow {
+  id: string;
+  customer: string;
+  service: 'HVAC' | 'Plumbing';
+  area: string;
+  urgency: 'Emergency' | 'Same day' | 'Scheduled';
+  status: 'New' | 'Assigned' | 'En route' | 'On site' | 'Blocked' | 'Completed';
+  assignee: string | null;
+  window: string;
 }
 
-export interface LandingPricingPlan {
+export const MOCK_BOARD_JOBS: MockJobRow[] = [
+  {
+    id: 'NF-1842',
+    customer: 'Mona Hassan',
+    service: 'HVAC',
+    area: 'Maadi',
+    urgency: 'Emergency',
+    status: 'En route',
+    assignee: 'Karim N.',
+    window: 'ASAP',
+  },
+  {
+    id: 'NF-1841',
+    customer: 'Omar Farouk',
+    service: 'Plumbing',
+    area: 'Nasr City',
+    urgency: 'Same day',
+    status: 'Assigned',
+    assignee: 'Youssef A.',
+    window: '14:00–16:00',
+  },
+  {
+    id: 'NF-1840',
+    customer: 'Sara El Masry',
+    service: 'HVAC',
+    area: 'Zamalek',
+    urgency: 'Scheduled',
+    status: 'New',
+    assignee: null,
+    window: 'Tomorrow 10:00',
+  },
+  {
+    id: 'NF-1838',
+    customer: 'Hany Kamel',
+    service: 'Plumbing',
+    area: 'Heliopolis',
+    urgency: 'Same day',
+    status: 'Blocked',
+    assignee: 'Karim N.',
+    window: '11:00–13:00',
+  },
+  {
+    id: 'NF-1835',
+    customer: 'Laila Mansour',
+    service: 'HVAC',
+    area: 'New Cairo',
+    urgency: 'Scheduled',
+    status: 'On site',
+    assignee: 'Nour S.',
+    window: '09:00–11:00',
+  },
+];
+
+export interface MockTechnician {
   name: string;
-  price: string;
-  period: string;
-  description: string;
-  features: string[];
-  highlighted?: boolean;
+  skills: string;
+  area: string;
+  openJobs: number;
+  active: boolean;
 }
 
-export interface LandingStat {
-  value: string;
-  label: string;
+export const MOCK_TECHNICIANS: MockTechnician[] = [
+  {
+    name: 'Karim Nabil',
+    skills: 'HVAC · Plumbing',
+    area: 'Maadi, Mokattam',
+    openJobs: 3,
+    active: true,
+  },
+  {
+    name: 'Youssef Adel',
+    skills: 'Plumbing',
+    area: 'Nasr City, Heliopolis',
+    openJobs: 2,
+    active: true,
+  },
+  {
+    name: 'Nour Saleh',
+    skills: 'HVAC',
+    area: 'New Cairo, Rehab',
+    openJobs: 1,
+    active: true,
+  },
+  {
+    name: 'Tarek Mostafa',
+    skills: 'Plumbing',
+    area: '6th October',
+    openJobs: 0,
+    active: false,
+  },
+];
+
+export interface MockNotifyRow {
+  event: 'Assigned' | 'En route' | 'Reassign';
+  recipient: string;
+  channel: string;
+  status: 'pending' | 'sent' | 'failed';
 }
 
-export const LANDING_FEATURES: LandingFeature[] = [
+export const MOCK_NOTIFY_ROWS: MockNotifyRow[] = [
   {
-    icon: BarChart3,
-    title: 'Real-time dashboards',
-    description:
-      'Track goals, KPIs, and team performance in one place with live updates and customizable views.',
+    event: 'Assigned',
+    recipient: 'Mona Hassan',
+    channel: 'SMS · AR',
+    status: 'sent',
   },
   {
-    icon: Users,
-    title: 'Team workspaces',
-    description:
-      'Organize people into workspaces, assign roles, and collaborate without stepping on each other.',
+    event: 'En route',
+    recipient: 'Mona Hassan',
+    channel: 'SMS · AR',
+    status: 'pending',
   },
   {
-    icon: Workflow,
-    title: 'Smart automations',
-    description:
-      'Automate repetitive workflows — status updates, notifications, and handoffs happen on autopilot.',
+    event: 'Assigned',
+    recipient: 'Karim Nabil',
+    channel: 'SMS · EN',
+    status: 'sent',
   },
   {
-    icon: Plug,
-    title: 'Integrations',
-    description:
-      'Connect Slack, GitHub, Google Workspace, and dozens more tools your team already uses.',
-  },
-  {
-    icon: Lock,
-    title: 'Enterprise security',
-    description:
-      'SSO, audit logs, and granular permissions keep your data safe and compliance-ready.',
-  },
-  {
-    icon: Bell,
-    title: 'Actionable alerts',
-    description:
-      'Get notified when it matters — missed deadlines, blocked tasks, and milestone achievements.',
+    event: 'Reassign',
+    recipient: 'Omar Farouk',
+    channel: 'SMS · AR',
+    status: 'failed',
   },
 ];
-
-export const LANDING_PRICING: LandingPricingPlan[] = [
-  {
-    name: 'Starter',
-    price: '$0',
-    period: 'forever',
-    description: 'For individuals and small teams getting started.',
-    features: [
-      'Up to 5 team members',
-      '3 workspaces',
-      'Basic dashboards',
-      'Email support',
-    ],
-  },
-  {
-    name: 'Pro',
-    price: '$29',
-    period: 'per user / month',
-    description: 'For growing teams that need more power.',
-    features: [
-      'Unlimited team members',
-      'Unlimited workspaces',
-      'Advanced analytics',
-      'Automations & integrations',
-      'Priority support',
-    ],
-    highlighted: true,
-  },
-  {
-    name: 'Business',
-    price: '$79',
-    period: 'per user / month',
-    description: 'For organizations with advanced needs.',
-    features: [
-      'Everything in Pro',
-      'SSO & SAML',
-      'Audit logs',
-      'Dedicated success manager',
-      'Custom contracts',
-    ],
-  },
-];
-
-export const LANDING_STATS: LandingStat[] = [
-  { value: '12k+', label: 'Teams worldwide' },
-  { value: '99.9%', label: 'Uptime SLA' },
-  { value: '4.9/5', label: 'Customer rating' },
-];
-
-export const LANDING_NAV_LINKS = [
-  { label: 'Features', href: '#features' },
-  { label: 'Pricing', href: '#pricing' },
-] as const;
-
-export const LANDING_FOOTER_LINKS = [
-  { label: 'Privacy', href: '#' },
-  { label: 'Terms', href: '#' },
-  { label: 'Contact', href: '#' },
-] as const;

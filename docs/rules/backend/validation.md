@@ -1,14 +1,14 @@
 # Validation: Zod + nestjs-zod
 
-HTTP input/output validation uses Zod schemas from `@saas-kit/schemas`. **NEVER** duplicate those API contracts in any app.
+HTTP input/output validation uses Zod schemas from `@flowdesk/schemas`. **NEVER** duplicate those API contracts in any app.
 
-Process env is **not** an API contract. Server env schemas live in `apps/server/src/shared/config/` only. **NEVER** put `DATABASE_URL`, `BETTER_AUTH_SECRET`, or any other server secret/config schema in `@saas-kit/schemas`. Frontends must not be able to import them.
+Process env is **not** an API contract. Server env schemas live in `apps/server/src/shared/config/` only. **NEVER** put `DATABASE_URL`, `BETTER_AUTH_SECRET`, or any other server secret/config schema in `@flowdesk/schemas`. Frontends must not be able to import them.
 
 ## Setup
 
 - Install `nestjs-zod` and register `ZodValidationPipe` globally in `main.ts`.
-- Import **HTTP** schemas and types from `@saas-kit/schemas` — e.g. `CreateUserSchema`, `CreateUserInput`.
-- Import **env** schemas from `shared/config/env.schema.ts` — never from `@saas-kit/schemas`. **NEVER** use `env.ts`.
+- Import **HTTP** schemas and types from `@flowdesk/schemas` — e.g. `CreateUserSchema`, `CreateUserInput`.
+- Import **env** schemas from `shared/config/env.schema.ts` — never from `@flowdesk/schemas`. **NEVER** use `env.ts`.
 - **NEVER** use `class-validator` / `class-transformer` DTOs when a shared Zod schema exists.
 
 ## DTO Pattern
@@ -18,7 +18,7 @@ Process env is **not** an API contract. Server env schemas live in `apps/server/
 ```ts
 // modules/user/dto/create-user.dto.ts
 import { createZodDto } from 'nestjs-zod';
-import { CreateUserSchema } from '@saas-kit/schemas';
+import { CreateUserSchema } from '@flowdesk/schemas';
 
 export class CreateUserDto extends createZodDto(CreateUserSchema) {}
 ```

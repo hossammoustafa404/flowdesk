@@ -20,7 +20,7 @@ Strict naming rules for **all packages** — frontend, backend, shared libraries
 - **ALWAYS** put enums in `enums/{name}.enum.ts` (`modules/{name}/enums/`, `features/{name}/enums/`). Shared infra uses `shared/{area}/enums/{name}.enum.ts`. Import from the folder barrel (`enums/index.ts`) inside the module or feature. **NEVER** declare an `enum` in a service, controller, hook, component, view, or other implementation file.
 - **NEVER** use `type` for an object shape (`type Foo = { ... }`). `type` is only for unions, intersections, mapped types, function types, and Zod `z.infer`.
 - **NEVER** declare object-shape interfaces in services, controllers, hooks, views, or other implementation files. Component-local props interfaces may stay colocated in the component file.
-- **NEVER** duplicate an `@saas-kit/schemas` contract as a local interface.
+- **NEVER** duplicate an `@flowdesk/schemas` contract as a local interface.
 - **ALWAYS** put `SCREAMING_SNAKE_CASE` constants in a `{name}.constants.ts` file on the server (`modules/auth/auth.constants.ts`, `shared/mail/mail.constants.ts`) and in `constants.ts` at a frontend feature root (`features/users/constants.ts`).
 - **NEVER** declare `SCREAMING_SNAKE_CASE` constants in services, controllers, hooks, components, views, or other implementation files.
 - **NEVER** create a `constants/` folder. One file per module, feature, or shared area.
@@ -190,7 +190,7 @@ Strict naming rules for **all packages** — frontend, backend, shared libraries
 | NestJS config keys  | `SCREAMING_SNAKE_CASE` | `DATABASE_URL`        |
 
 - **NEVER** prefix server-only secrets with `NEXT_PUBLIC_`.
-- Server env Zod schema: `apps/server/src/shared/config/env.schema.ts` — **NEVER** `env.ts`, **NEVER** in `@saas-kit/schemas`.
+- Server env Zod schema: `apps/server/src/shared/config/env.schema.ts` — **NEVER** `env.ts`, **NEVER** in `@flowdesk/schemas`.
 - **NEVER** add `*.schema.spec.ts` (server env schemas included). See `backend/testing.md`.
 
 ## Tests
@@ -204,7 +204,7 @@ Strict naming rules for **all packages** — frontend, backend, shared libraries
 
 ## Imports & Exports
 
-- Path aliases: `@/` for app root (per-app, not workspace-wide). Apps use `@saas-kit/{app}` (`@saas-kit/web`, `@saas-kit/server`). Shared packages use `@saas-kit/{package}` — e.g. `@saas-kit/schemas`. See `monorepo.md`.
+- Path aliases: `@/` for app root (per-app, not workspace-wide). Apps use `@flowdesk/{app}` (`@flowdesk/web`, `@flowdesk/server`). Shared packages use `@flowdesk/{package}` — e.g. `@flowdesk/schemas`. See `monorepo.md`.
 - **NEVER** use generic scopes like `@org/` or `@repo/`.
 - Named exports by default. Default exports only for Next.js `page.tsx` / `layout.tsx` requirements.
 - Barrel re-exports use named exports — `export { UserCard } from "./user-card"`.

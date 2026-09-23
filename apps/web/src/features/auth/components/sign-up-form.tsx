@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { SignUpSchema, type SignUpInput } from '@saas-kit/schemas';
+import { SignUpSchema, type SignUpInput } from '@flowdesk/schemas';
 
 import { Button } from '@/components/ui/button';
 import {

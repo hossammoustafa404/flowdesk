@@ -10,7 +10,7 @@ const swcJestConfig = JSON.parse(
 swcJestConfig.swcrc = false;
 
 module.exports = {
-  displayName: '@saas-kit/server',
+  displayName: '@flowdesk/server',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {

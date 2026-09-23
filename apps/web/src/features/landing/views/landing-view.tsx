@@ -1,23 +1,48 @@
+'use client';
+
 import {
   LandingCta,
-  LandingFeatures,
+  LandingFaq,
   LandingFooter,
   LandingHeader,
   LandingHero,
-  LandingPricing,
+  LandingProblem,
+  LandingRoles,
+  LandingShowcase,
+  LandingWorkflow,
 } from '../components';
+import { LandingLocaleProvider, useLandingLocale } from '../hooks';
 
-export function LandingView() {
+function LandingContent() {
+  const { messages } = useLandingLocale();
+
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:start-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+      >
+        {messages.skipToContent}
+      </a>
       <LandingHeader />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <LandingHero />
-        <LandingFeatures />
-        <LandingPricing />
+        <LandingProblem />
+        <LandingWorkflow />
+        <LandingShowcase />
+        <LandingRoles />
+        <LandingFaq />
         <LandingCta />
       </main>
       <LandingFooter />
     </div>
+  );
+}
+
+export function LandingView() {
+  return (
+    <LandingLocaleProvider>
+      <LandingContent />
+    </LandingLocaleProvider>
   );
 }

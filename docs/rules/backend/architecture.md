@@ -9,7 +9,7 @@ src/
 ├── main.ts
 ├── app.module.ts
 ├── shared/
-│   ├── config/                   # Env Zod schema + ConfigModule — not @saas-kit/schemas
+│   ├── config/                   # Env Zod schema + ConfigModule — not @flowdesk/schemas
 │   │   ├── env.schema.ts         # DATABASE_URL, PORT, secrets — server-only; no spec
 │   │   └── config.module.ts
 │   ├── prisma/
@@ -91,7 +91,7 @@ src/
 - **NEVER** declare object-shape `type` aliases or interfaces in services, controllers, hooks, or other implementation files.
 - **NEVER** declare file-level helper functions beside a class. Helpers that exist only to serve that class are `private` methods on it. Spec files may keep local factories. Files that export only functions (no class) may keep file-level helpers. See `clean-code.md`, `nestjs.md`.
 - **NEVER** use `type` for an object shape. `type` is only for unions, intersections, mapped types, function types, and Zod `z.infer`.
-- **NEVER** put HTTP contracts in `interfaces/` — those stay in `@saas-kit/schemas` and module `dto/`. **NEVER** define a parallel interface for a Zod schema.
+- **NEVER** put HTTP contracts in `interfaces/` — those stay in `@flowdesk/schemas` and module `dto/`. **NEVER** define a parallel interface for a Zod schema.
 - **ALWAYS** put module-level `SCREAMING_SNAKE_CASE` constants in `modules/{name}/{name}.constants.ts`. Shared infra constants live in `shared/{area}/{area}.constants.ts`. **NEVER** a bare `constants.ts` on the server.
 - **NEVER** declare `SCREAMING_SNAKE_CASE` constants in services, controllers, hooks, or other implementation files.
 - **NEVER** create a `constants/` folder. **NEVER** put domain constants in `shared/`.
@@ -106,11 +106,11 @@ src/
 - HTTP logs: `logIncomingReq` writes incoming `Incoming Request: METHOD /path`. `logOutcomingRes` writes `Outcoming Response: METHOD /path 200 OK` (or 4xx/5xx at the same prefix). Warn includes the exception message; error includes the message and a `stack` field. Incoming middleware is registered with `NestModule.configure` and excludes `/api/auth`. Better-auth incoming and outgoing logs come from `httpObservabilityPlugin` `hooks.before` / `hooks.after` in `modules/auth/plugins/` — those routes never enter the Nest middleware, interceptor, or filter. The filter logs the already-written status when headers are sent, then marks 5xx spans Error. **NEVER** return 4xx/5xx from a Nest handler by setting status and returning a body. **NEVER** an Express `finish` listener. See `controllers.md`.
 - **NEVER** `shared/filters/`, `shared/interceptors/`, or `shared/middlewares/` as a dumping ground. **NEVER** `new` a module-owned filter, interceptor, or middleware in `main.ts`.
 - Constants: `{module}.constants.ts` at the module root. **NEVER** `constants.ts`.
-- Internal interfaces: `interfaces/{name}.interface.ts` — **one exported interface per file**. Re-export from `interfaces/index.ts`. **NEVER** `types.ts`. **NEVER** put several interfaces in one file. HTTP contracts stay in `@saas-kit/schemas`, not here.
+- Internal interfaces: `interfaces/{name}.interface.ts` — **one exported interface per file**. Re-export from `interfaces/index.ts`. **NEVER** `types.ts`. **NEVER** put several interfaces in one file. HTTP contracts stay in `@flowdesk/schemas`, not here.
 - **NEVER** apply frontend feature root files (`constants.ts`, `types.ts`) to `apps/server`.
 - **NEVER** create `shared/index.ts` or `shared/swagger/index.ts`. Import from the concrete file (`shared/config/config.module`, `shared/prisma/prisma.module`, `shared/observability/observability.module`, `shared/queue/queue.module`, `shared/mail/mail.module`, `shared/swagger/setup-swagger`, `shared/config/env.schema`). Feature-module barrels (`modules/{name}/index.ts`) and folder barrels (`interfaces/index.ts`, `services/index.ts`) stay required.
 - **NEVER** create `shared/docs/`. Swagger lives in `shared/swagger/setup-swagger.ts` only — DocumentBuilder metadata stays in that file. **NEVER** split a `swagger.config.ts`. **NEVER** put error envelopes, Scalar, or other docs products in `shared/swagger/`.
-- **NEVER** export env schemas from `@saas-kit/schemas`. Server process config stays in `shared/config/`. HTTP contracts stay in `@saas-kit/schemas`.
+- **NEVER** export env schemas from `@flowdesk/schemas`. Server process config stays in `shared/config/`. HTTP contracts stay in `@flowdesk/schemas`.
 
 ## Action Services (One Folder Per Action)
 
@@ -166,7 +166,7 @@ export class UserController {
 - Object-shape contracts used **only within a module** live in `interfaces/` — `{name}.interface.ts`, re-exported from `interfaces/index.ts`.
 - **ALWAYS** use `interface`, never `type Foo = { ... }`.
 - Import from the folder barrel within the module: `from "../../interfaces"`, not `from "../../interfaces/create-auth-options.interface"`.
-- HTTP request/response shapes stay in `@saas-kit/schemas` and `dto/`. Do not duplicate them as interfaces.
+- HTTP request/response shapes stay in `@flowdesk/schemas` and `dto/`. Do not duplicate them as interfaces.
 
 ## Module-Scoped Enums
 

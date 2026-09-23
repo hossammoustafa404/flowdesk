@@ -47,7 +47,7 @@ import { cleanupOpenApiDoc } from 'nestjs-zod';
 
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('SaaS Kit API')
+    .setTitle('Flowdesk API')
     .setDescription(
       'REST API for application resources. Health is a process-up signal only.',
     )
@@ -88,9 +88,9 @@ Do **not** add a cookie security scheme or a better-auth `/api/auth/reference` l
 
 ## Request & Response Meta Examples
 
-**Every request body and every response body must have a root-level `.meta({ example })`** — a complete, realistic JSON object on the Zod schema. That example flows into OpenAPI through `createZodDto`. Do **not** export a separate `*Example` constant from `@saas-kit/schemas`.
+**Every request body and every response body must have a root-level `.meta({ example })`** — a complete, realistic JSON object on the Zod schema. That example flows into OpenAPI through `createZodDto`. Do **not** export a separate `*Example` constant from `@flowdesk/schemas`.
 
-### Convention (`@saas-kit/schemas`)
+### Convention (`@flowdesk/schemas`)
 
 Co-locate schema and inferred type in the same file. Put the example only on `.meta({ example })`:
 
@@ -167,7 +167,7 @@ export const UserListSchema = z
 
 ### Wiring in controllers
 
-Use the DTO from `createZodDto`. OpenAPI picks up the schema's `.meta({ example })` — do **not** re-declare examples on the controller and do **not** import `*Example` from `@saas-kit/schemas`.
+Use the DTO from `createZodDto`. OpenAPI picks up the schema's `.meta({ example })` — do **not** re-declare examples on the controller and do **not** import `*Example` from `@flowdesk/schemas`.
 
 ```ts
 @Post()
@@ -183,12 +183,12 @@ findAll() { ... }
 - Request bodies: `@ApiBody({ type: CreateUserDto })`.
 - Success responses: `@ApiOkResponse` / `@ApiCreatedResponse` with `type` DTO only.
 - Error responses: document status and description on the controller (`@ApiBadRequestResponse`, `@ApiUnauthorizedResponse`, etc.). Do **not** invent a shared error DTO under `shared/swagger/`.
-- **NEVER** export `*Example` constants from `@saas-kit/schemas`.
+- **NEVER** export `*Example` constants from `@flowdesk/schemas`.
 - **NEVER** duplicate example JSON in controllers.
 
 ## Zod Schema Metadata (Shared Package)
 
-Rich docs start in `@saas-kit/schemas`. Every field gets `.describe()`; every schema gets a root `.meta({ example })`:
+Rich docs start in `@flowdesk/schemas`. Every field gets `.describe()`; every schema gets a root `.meta({ example })`:
 
 ```ts
 // packages/schemas/src/health/health.schema.ts — template for later schemas
@@ -204,7 +204,7 @@ export type Health = z.infer<typeof HealthSchema>;
 
 - **ALWAYS** attach `.meta({ example })` on the **root** schema object with a complete JSON example.
 - **ALWAYS** add `.describe()` on every field and on the root schema.
-- **NEVER** export a `*Example` constant from `@saas-kit/schemas` (schema, type, and barrel).
+- **NEVER** export a `*Example` constant from `@flowdesk/schemas` (schema, type, and barrel).
 - List/collection responses **ALWAYS** include `meta` (pagination) in the root example.
 
 ## DTOs for Swagger
@@ -214,12 +214,12 @@ Create DTO classes from shared schemas — one per request/response shape:
 ```ts
 // modules/user/dto/create-user.dto.ts
 import { createZodDto } from 'nestjs-zod';
-import { CreateUserSchema } from '@saas-kit/schemas';
+import { CreateUserSchema } from '@flowdesk/schemas';
 export class CreateUserDto extends createZodDto(CreateUserSchema) {}
 
 // modules/user/dto/user-response.dto.ts
 import { createZodDto } from 'nestjs-zod';
-import { UserSchema } from '@saas-kit/schemas';
+import { UserSchema } from '@flowdesk/schemas';
 export class UserResponseDto extends createZodDto(UserSchema) {}
 ```
 
@@ -462,5 +462,5 @@ Before marking an endpoint complete (applies to **private and public** routes):
 - **NEVER** document private endpoints richly while leaving public endpoints sparse.
 - **ALWAYS** update docs when changing request/response shapes, status codes, or auth requirements.
 - **ALWAYS** put a complete JSON example on the schema with root `.meta({ example })`.
-- **NEVER** export a `*Example` constant from `@saas-kit/schemas`.
+- **NEVER** export a `*Example` constant from `@flowdesk/schemas`.
 - **NEVER** duplicate example JSON on controllers (`content.example`, `@ApiBody({ examples })`).

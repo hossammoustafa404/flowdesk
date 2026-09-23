@@ -52,5 +52,5 @@ user.controller.spec.ts
 
 - Prefer testing behavior over implementation details.
 - Do not test Prisma or NestJS framework internals.
-- **NEVER** add `*.schema.spec.ts` (or any spec that only `safeParse`s a Zod schema). This includes `@saas-kit/schemas` **and** server env schemas (`shared/config/env.schema.ts`, seed env schemas). HTTP contracts are proven at the consumer (controller spec, e2e). Server env is proven by boot (`ConfigModule` validate) and by the e2e process having the required vars — not by parsing the schema in Jest.
+- **NEVER** add `*.schema.spec.ts` (or any spec that only `safeParse`s a Zod schema). This includes `@flowdesk/schemas` **and** server env schemas (`shared/config/env.schema.ts`, seed env schemas). HTTP contracts are proven at the consumer (controller spec, e2e). Server env is proven by boot (`ConfigModule` validate) and by the e2e process having the required vars — not by parsing the schema in Jest.
 - **NEVER** add `*.spec.ts`, `*.test.ts`, or Jest config under `packages/schemas`.

@@ -1,11 +1,6 @@
-# New Nx Repository
+# Flowdesk
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
-
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/docs/technologies/typescript/introduction?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/get-started). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
+Nx monorepo for Flowdesk: `web` and `admin` (Next.js), `server` (NestJS), and `@flowdesk/schemas`.
 
 ## Generate a library
 
@@ -33,7 +28,7 @@ These targets are either [inferred automatically](https://nx.dev/docs/concepts/i
 
 ## Prisma (`server`)
 
-The API uses Prisma 7 against local PostgreSQL (`localhost:5432`, database `saas_kit`). It also needs Redis (`localhost:6379`) for the mail queue and a Resend API key for outbound mail. Copy `apps/server/.env.example` to `apps/server/.env` and set `DATABASE_URL`, `REDIS_URL`, `RESEND_API_KEY`, and `MAIL_FROM`. Create the database if it does not exist. Do not commit `.env`.
+The API uses Prisma 7 against local PostgreSQL (`localhost:5432`, database `flowdesk`). It also needs Redis (`localhost:6379`) for the mail queue and a Resend API key for outbound mail. Copy `apps/server/.env.example` to `apps/server/.env` and set `DATABASE_URL`, `REDIS_URL`, `RESEND_API_KEY`, and `MAIL_FROM`. Create the database if it does not exist. Do not commit `.env`.
 
 Run Prisma through Nx from the workspace root so `cwd` is `apps/server`:
 

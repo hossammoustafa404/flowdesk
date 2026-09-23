@@ -31,7 +31,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, type LoginInput } from "@saas-kit/schemas";
+import { LoginSchema, type LoginInput } from "@flowdesk/schemas";
 import {
   Form,
   FormField,

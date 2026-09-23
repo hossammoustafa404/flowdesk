@@ -1,6 +1,6 @@
 # Database: Prisma + PostgreSQL
 
-Local development uses PostgreSQL installed on the machine (`localhost:5432`), database `saas_kit`, role `postgres`. Prisma ORM **7** (GA) — not Prisma 8 RC.
+Local development uses PostgreSQL installed on the machine (`localhost:5432`), database `flowdesk`, role `postgres`. Prisma ORM **7** (GA) — not Prisma 8 RC.
 
 ## Directory Structure
 
@@ -34,7 +34,7 @@ See `naming-conventions.md` for full rules:
 - Primary keys: `id`. Foreign keys: `{relatedTable}Id`.
 - Map Prisma `@@map` and `@map` to match database naming when Prisma model names differ.
 - **No entity files** — use Prisma-generated types in action services; expose API shapes via shared Zod schemas.
-- Generate the client with `provider = "prisma-client"` and `moduleFormat = "cjs"`. Nest/webpack stays CommonJS. See `docs/adr/0001-prisma-client-commonjs.md`.
+- Generate the client with `provider = "prisma-client"` and `moduleFormat = "cjs"`. Nest/webpack stays CommonJS. See `docs/adr/0007-prisma-client-commonjs.md`.
 
 ## Data Access Rules
 

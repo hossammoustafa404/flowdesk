@@ -1,55 +1,58 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
-import { AUTH_ROUTES } from '@/features/auth';
 import { cn } from '@/lib/utils';
 
-import { PRODUCT_NAME } from '../constants';
+import { LANDING_AUTH_HREFS, PRODUCT_NAME } from '../constants';
+import { useLandingLocale } from '../hooks';
+import { Reveal } from './reveal';
 
 export function LandingCta() {
+  const { messages, isRtl } = useLandingLocale();
+
   return (
-    <section
-      id="get-started"
-      className="border-t border-border/60 bg-muted/30 py-24"
-    >
+    <section className="border-t border-border py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card px-6 py-16 text-center sm:px-12">
-          <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-primary)/0.08,transparent_70%)]"
-            aria-hidden="true"
-          />
-
-          <div className="relative mx-auto max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Ready to move faster?
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Join thousands of teams using {PRODUCT_NAME} to stay aligned, ship
-              on time, and hit their goals.
+        <Reveal>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">
+              {PRODUCT_NAME}
             </p>
-
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <h2 className="mt-3 font-heading text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-4xl">
+              {messages.cta.title}
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground text-pretty sm:text-base">
+              {messages.cta.description}
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
-                href={AUTH_ROUTES.signUp}
-                className={cn(buttonVariants({ size: 'lg' }), 'gap-1.5')}
+                href={LANDING_AUTH_HREFS.signUp}
+                className={cn(
+                  buttonVariants({ size: 'lg' }),
+                  'h-11 w-full cursor-pointer px-5 sm:w-auto',
+                )}
               >
-                Start your free trial
-                <ArrowRight className="size-4" aria-hidden="true" />
+                {messages.actions.createYourOrganization}
+                <ArrowRight
+                  className={cn('size-4', isRtl && 'rotate-180')}
+                  aria-hidden="true"
+                />
               </Link>
               <Link
-                href={AUTH_ROUTES.signIn}
-                className={buttonVariants({ size: 'lg', variant: 'outline' })}
+                href={LANDING_AUTH_HREFS.signIn}
+                className={cn(
+                  buttonVariants({ size: 'lg', variant: 'outline' }),
+                  'h-11 w-full cursor-pointer px-5 sm:w-auto',
+                )}
               >
-                Sign in
+                {messages.actions.signIn}
               </Link>
             </div>
-
-            <p className="mt-6 text-sm text-muted-foreground">
-              No credit card required · 14-day free trial · Cancel anytime
-            </p>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

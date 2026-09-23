@@ -11,7 +11,7 @@ The codebase is an **Nx monorepo**. Nx orchestrates builds, tests, and lint acro
 │   ├── admin/            # Next.js — internal admin dashboard — see frontend/
 │   └── server/           # NestJS — REST API — see backend/
 ├── packages/
-│   └── schemas/              # @flowdesk/schemas — shared Zod schemas and types
+│   └── schemas/              # @flowdesk/schemas — shared Zod HTTP contracts (backend-owned)
 ├── nx.json
 ├── package.json              # Root workspace scripts only — no app logic
 └── tsconfig.base.json        # Path mappings for all projects
@@ -22,7 +22,7 @@ The codebase is an **Nx monorepo**. Nx orchestrates builds, tests, and lint acro
 | `apps/web`         | `@flowdesk/web`      | `@/` (app-internal) | Client-facing Next.js app     |
 | `apps/admin`       | `@flowdesk/admin`    | `@/` (app-internal) | Admin dashboard Next.js app   |
 | `apps/server`      | `@flowdesk/server`   | `@/` (app-internal) | NestJS API server             |
-| `packages/schemas` | `@flowdesk/schemas`     | `@flowdesk/schemas`    | Shared contracts for all apps |
+| `packages/schemas` | `@flowdesk/schemas`     | `@flowdesk/schemas`    | Backend-owned HTTP Zod contracts; apps consume |
 
 - **NEVER** put application code at the workspace root.
 - **NEVER** create `libs/` at root unless matching an existing Nx layout — prefer `packages/` for shared code.
@@ -57,7 +57,9 @@ packages    ──X──► apps           (libs never import apps)
 
 - Apps communicate over HTTP — never import source from another app.
 - Shared types and Zod schemas live in `@flowdesk/schemas` only. Examples stay on `.meta({ example })` — do not export `*Example` constants. See `naming-conventions.md`, `backend/validation.md`, `backend/api-docs.md`.
+- **`@flowdesk/schemas` is backend-owned.** Only `server` / backend work adds, changes, or removes shared Zod contracts. `web` and `admin` **consume** them — they never author or edit `packages/schemas`.
 - **NEVER** duplicate a schema or API contract inside any app when it belongs in `packages/schemas`.
+- **NEVER** change `@flowdesk/schemas` from a frontend-only ticket or PR — extend the contract in backend work first, then consume on the client.
 
 ## Nx Tags & Module Boundaries
 
@@ -111,7 +113,8 @@ packages/schemas/
 - **ALWAYS** name contract files `{name}.schema.ts` (`health/health.schema.ts`, not `health.ts` or `src/health.schema.ts`). See `naming-conventions.md`.
 - **NEVER** place `*.schema.ts` at `src/` root — only `index.ts` lives there.
 - **NEVER** deep-import a schema file from an app (`@flowdesk/schemas/health/health.schema`). Consumers use the package barrel only.
-- Export **HTTP** schemas and inferred types from `src/index.ts`. This package is API contracts shared by `web`, `admin`, and `server`. **NEVER** export `*Example` constants from the barrel.
+- Export **HTTP** schemas and inferred types from `src/index.ts`. This package is the backend-owned API contract surface shared by `web`, `admin`, and `server`. **NEVER** export `*Example` constants from the barrel.
+- **ALWAYS** treat schema authorship as a backend responsibility (with server validation, OpenAPI metadata, and server e2e as the proving ground). Frontends only import from the package barrel.
 - **NEVER** add `*.spec.ts`, `*.test.ts`, Jest config, or a test target in `packages/schemas`. Contracts are proven by consuming apps (server e2e, controller specs, form tests) — not by parsing examples in this package.
 - **NEVER** add `*.schema.spec.ts` in `apps/server` either — not for `shared/config/env.schema.ts` and not for seed env schemas. See `backend/testing.md`.
 - **NEVER** export internals — one barrel, named exports only.
@@ -198,5 +201,5 @@ nx affected -t lint test build --base=origin/main
 - **NEVER** bypass Nx project graph with ad-hoc relative imports across `apps/` or `packages/`.
 - **NEVER** commit changes to `packages/schemas` without verifying `web`, `admin`, and `server` still build and test.
 - **ALWAYS** use `nx affected` locally before opening a PR.
-- **ALWAYS** add new shared contracts to `packages/schemas` first, then consume in apps.
+- **ALWAYS** add or change shared contracts in `packages/schemas` as backend work first, then consume in apps — **NEVER** invent or patch contracts from `web`/`admin`.
 - `frontend/` rules apply to **both** `web` and `admin`. `backend/` rules apply to `server`. This file governs workspace structure and cross-project boundaries only.

@@ -10,7 +10,26 @@ export function NotifyHygieneMock() {
 
   return (
     <MockChrome title={mocks.notifyTitle} subtitle={mocks.notifySubtitle}>
-      <div className="overflow-x-auto">
+      <ul className="divide-y divide-border md:hidden">
+        {MOCK_NOTIFY_ROWS.map((row) => (
+          <li
+            key={`${row.event}-${row.recipient}-${row.status}`}
+            className="space-y-1.5 px-3 py-3"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <p className="min-w-0 text-xs font-medium">
+                {mocks.events[row.event]}
+              </p>
+              <StatusPill status={row.status} />
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              {row.recipient} · {row.channel}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[28rem] text-start text-xs">
           <thead className="border-b border-border text-[10px] tracking-wide text-muted-foreground uppercase">
             <tr>

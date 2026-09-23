@@ -148,6 +148,8 @@ Strict naming rules for **all packages** — frontend, backend, shared libraries
 
 ## Shared Schemas (Zod)
 
+`@flowdesk/schemas` is **backend-owned**. Backend authors HTTP Zod contracts; `web` and `admin` import them. **NEVER** invent or edit shared schemas from frontend-only work.
+
 | Kind                   | Case                                                 | Example                                                 |
 | ---------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
 | Schema module folder   | singular `kebab-case` matching the feature           | `health/`, `user/`, `order-item/`                       |

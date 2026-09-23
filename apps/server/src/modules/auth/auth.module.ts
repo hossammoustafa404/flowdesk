@@ -10,6 +10,7 @@ import { ObservabilityService } from '../../shared/observability/services';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { AuthEventsHook } from './hooks/auth-events.hook';
 import { OriginGateHook } from './hooks/origin-gate.hook';
+import { SignUpOrganizationHook } from './hooks/sign-up-organization.hook';
 import { createAuth } from './lib/auth';
 
 @Module({
@@ -36,6 +37,6 @@ import { createAuth } from './lib/auth';
       }),
     }),
   ],
-  providers: [OriginGateHook, AuthEventsHook],
+  providers: [OriginGateHook, SignUpOrganizationHook, AuthEventsHook],
 })
 export class AuthModule {}

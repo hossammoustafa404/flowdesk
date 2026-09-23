@@ -28,7 +28,30 @@ export function JobsBoardMock({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <ul className="divide-y divide-border md:hidden">
+        {jobs.map((job) => (
+          <li key={job.id} className="space-y-2 px-3 py-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium">{job.id}</p>
+                <p className="truncate text-sm font-medium">{job.customer}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  {job.service} · {job.area} · {job.window}
+                </p>
+              </div>
+              <StatusPill status={job.status} />
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <UrgencyPill urgency={job.urgency} />
+              <span className="text-[11px] text-muted-foreground">
+                {job.assignee ?? mocks.table.unassigned}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[36rem] text-start text-xs">
           <thead className="border-b border-border text-[10px] tracking-wide text-muted-foreground uppercase">
             <tr>

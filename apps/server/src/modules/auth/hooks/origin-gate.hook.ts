@@ -7,6 +7,7 @@ import {
   BeforeHook,
   Hook,
 } from '@thallesp/nestjs-better-auth';
+import { SignUpSchema } from '@flowdesk/schemas';
 import type { Env } from '../../../shared/config/env.schema';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import { OriginKind, UserRole } from '../enums';
@@ -28,6 +29,8 @@ export class OriginGateHook {
     }
 
     this.ignoreClientRole(ctx);
+    this.normalizeSignUpEmail(ctx);
+    this.rejectInvalidSignUpBody(ctx);
     await this.rejectExistingEmail(ctx);
   }
 
@@ -153,5 +156,28 @@ export class OriginGateHook {
     if (body !== null && typeof body === 'object' && 'role' in body) {
       delete body.role;
     }
+  }
+
+  private normalizeSignUpEmail(ctx: AuthHookContext): void {
+    const body = ctx.body;
+    if (
+      body !== null &&
+      typeof body === 'object' &&
+      'email' in body &&
+      typeof body.email === 'string'
+    ) {
+      body.email = body.email.trim().toLowerCase();
+    }
+  }
+
+  private rejectInvalidSignUpBody(ctx: AuthHookContext): void {
+    const parsed = SignUpSchema.safeParse(ctx.body);
+    if (parsed.success) {
+      return;
+    }
+
+    throw new APIError('BAD_REQUEST', {
+      message: parsed.error.issues[0]?.message ?? 'Invalid Sign-up details',
+    });
   }
 }

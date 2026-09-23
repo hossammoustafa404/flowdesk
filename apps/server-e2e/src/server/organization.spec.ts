@@ -6,9 +6,13 @@ import {
   cookieHeader,
   createVerifiedCustomerSession,
   getSession,
+  hasSessionCookie,
   signIn,
   signOut,
+  signUpCustomer,
+  uniqueCustomerEmail,
   uniqueOrganizationSlug,
+  verifyCustomerEmail,
 } from '../support/auth-client';
 import {
   createOrganization,
@@ -19,25 +23,122 @@ import {
 } from '../support/organization-client';
 
 describe('Customer Organization workspace', () => {
-  it('should create no Organization on sign-up', async () => {
-    const session = await createVerifiedCustomerSession();
+  it('should create the Organization and Owner seat on Sign-up without a Session', async () => {
+    const email = uniqueCustomerEmail();
+    const organizationName = `Workspace ${uniqueOrganizationSlug()}`;
 
+    const signedUp = await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName,
+    });
+
+    expect(signedUp.status).toBe(200);
+    expect(hasSessionCookie(signedUp.headers['set-cookie'])).toBe(false);
+
+    const beforeVerify = await signIn({
+      email,
+      password: 'customer-password-1',
+      origin: WEB_ORIGIN,
+    });
+    expect(beforeVerify.status).toBeGreaterThanOrEqual(400);
+
+    await verifyCustomerEmail(email);
+    const signInRes = await signIn({
+      email,
+      password: 'customer-password-1',
+      origin: WEB_ORIGIN,
+    });
+    const session = {
+      cookie: cookieHeader(signInRes.headers['set-cookie']),
+      origin: WEB_ORIGIN,
+    };
     const listed = await listOrganizations(session);
+    const membership = await getActiveMember(session);
 
     expect(listed.status).toBe(200);
-    expect(listed.data).toEqual([]);
+    expect(listed.data).toEqual([
+      expect.objectContaining({ name: organizationName }),
+    ]);
+    expect(membership.status).toBe(200);
+    expect(membership.data.role).toBe('owner');
+    expect(String(membership.data.organizationId)).toBe(
+      String(listed.data[0].id),
+    );
   });
 
-  it('should leave Active Organization unset when the Customer has zero Memberships', async () => {
-    const session = await createVerifiedCustomerSession();
+  it('should set Active Organization on the Session after Email verification', async () => {
+    const email = uniqueCustomerEmail();
+    const organizationName = `Workspace ${uniqueOrganizationSlug()}`;
+    await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName,
+    });
 
+    const verify = await verifyCustomerEmail(email);
+    expect(verify.status).toBe(200);
+
+    let sessionCookie = cookieHeader(verify.headers['set-cookie']);
+    if (!hasSessionCookie(verify.headers['set-cookie'])) {
+      const signInRes = await signIn({
+        email,
+        password: 'customer-password-1',
+        origin: WEB_ORIGIN,
+      });
+      sessionCookie = cookieHeader(signInRes.headers['set-cookie']);
+    }
+
+    const session = { cookie: sessionCookie, origin: WEB_ORIGIN };
+    const listed = await listOrganizations(session);
     const current = await getSession(session);
 
-    expect(current.status).toBe(200);
-    expect(current.data.session.activeOrganizationId).toBeNull();
+    expect(listed.data).toHaveLength(1);
+    expect(listed.data[0].name).toBe(organizationName);
+    expect(String(current.data.session.activeOrganizationId)).toBe(
+      String(listed.data[0].id),
+    );
   });
 
-  it('should let a verified Customer create an Organization as owner and set it Active', async () => {
+  it('should reject Sign-up when Organization name is missing without creating a User', async () => {
+    const email = uniqueCustomerEmail();
+
+    const res = await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName: null,
+    });
+    const duplicate = await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName: `Workspace ${uniqueOrganizationSlug()}`,
+    });
+
+    expect(res.status).toBeGreaterThanOrEqual(400);
+    expect(hasSessionCookie(res.headers['set-cookie'])).toBe(false);
+    expect(duplicate.status).toBe(200);
+  });
+
+  it('should reject Sign-up when Organization name is invalid without creating a User', async () => {
+    const email = uniqueCustomerEmail();
+
+    const res = await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName: 'x'.repeat(101),
+    });
+    const retry = await signUpCustomer({
+      origin: WEB_ORIGIN,
+      email,
+      organizationName: `Workspace ${uniqueOrganizationSlug()}`,
+    });
+
+    expect(res.status).toBeGreaterThanOrEqual(400);
+    expect(hasSessionCookie(res.headers['set-cookie'])).toBe(false);
+    expect(retry.status).toBe(200);
+  });
+
+  it('should reject self-serve Organization create after Sign-up', async () => {
     const session = await createVerifiedCustomerSession();
     const slug = uniqueOrganizationSlug();
 
@@ -45,102 +146,45 @@ describe('Customer Organization workspace', () => {
       name: `Workspace ${slug}`,
       slug,
     });
-    const current = await getSession(session);
 
-    expect(created.status).toBe(200);
-    expect(created.data.name).toBe(`Workspace ${slug}`);
-    expect(created.data.slug).toBe(slug);
-    expect(created.data.members).toHaveLength(1);
-    expect(created.data.members[0].role).toBe('owner');
-    expect(String(created.data.members[0].userId)).toBe(
-      String(current.data.user.id),
-    );
-    expect(String(current.data.session.activeOrganizationId)).toBe(
-      String(created.data.id),
+    expect(created.status).toBeGreaterThanOrEqual(400);
+    expect(created.data.code).toBe(
+      'YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_ORGANIZATION',
     );
   });
 
-  it('should keep the current Active Organization when the Customer asks to keep it', async () => {
-    const session = await createVerifiedCustomerSession();
-    const firstSlug = uniqueOrganizationSlug();
-    const secondSlug = uniqueOrganizationSlug();
+  it('should list exactly the Organization created at Sign-up', async () => {
+    const organizationName = `Workspace ${uniqueOrganizationSlug()}`;
+    const session = await createVerifiedCustomerSession({ organizationName });
 
-    const first = await createOrganization(session, {
-      name: `Workspace ${firstSlug}`,
-      slug: firstSlug,
-    });
-    const second = await createOrganization(session, {
-      name: `Workspace ${secondSlug}`,
-      slug: secondSlug,
-      keepCurrentActiveOrganization: true,
-    });
-    const current = await getSession(session);
-
-    expect(first.status).toBe(200);
-    expect(second.status).toBe(200);
-    expect(String(current.data.session.activeOrganizationId)).toBe(
-      String(first.data.id),
-    );
-  });
-
-  it('should list Organizations the Customer belongs to', async () => {
-    const session = await createVerifiedCustomerSession();
-    const firstSlug = uniqueOrganizationSlug();
-    const secondSlug = uniqueOrganizationSlug();
-
-    await createOrganization(session, {
-      name: `Workspace ${firstSlug}`,
-      slug: firstSlug,
-    });
-    await createOrganization(session, {
-      name: `Workspace ${secondSlug}`,
-      slug: secondSlug,
-      keepCurrentActiveOrganization: true,
-    });
     const listed = await listOrganizations(session);
 
     expect(listed.status).toBe(200);
-    expect(listed.data).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ slug: firstSlug }),
-        expect.objectContaining({ slug: secondSlug }),
-      ]),
-    );
+    expect(listed.data).toEqual([
+      expect.objectContaining({ name: organizationName }),
+    ]);
   });
 
   it('should set the Active Organization', async () => {
     const session = await createVerifiedCustomerSession();
-    const firstSlug = uniqueOrganizationSlug();
-    const secondSlug = uniqueOrganizationSlug();
+    const listed = await listOrganizations(session);
 
-    await createOrganization(session, {
-      name: `Workspace ${firstSlug}`,
-      slug: firstSlug,
-    });
-    const second = await createOrganization(session, {
-      name: `Workspace ${secondSlug}`,
-      slug: secondSlug,
-      keepCurrentActiveOrganization: true,
-    });
-
+    await setActiveOrganization(session, { organizationId: null });
+    const unset = await getSession(session);
     const setActive = await setActiveOrganization(session, {
-      organizationId: String(second.data.id),
+      organizationId: String(listed.data[0].id),
     });
     const current = await getSession(session);
 
+    expect(unset.data.session.activeOrganizationId).toBeNull();
     expect(setActive.status).toBe(200);
     expect(String(current.data.session.activeOrganizationId)).toBe(
-      String(second.data.id),
+      String(listed.data[0].id),
     );
   });
 
   it('should unset the Active Organization', async () => {
     const session = await createVerifiedCustomerSession();
-    const slug = uniqueOrganizationSlug();
-    await createOrganization(session, {
-      name: `Workspace ${slug}`,
-      slug,
-    });
 
     const unset = await setActiveOrganization(session, {
       organizationId: null,
@@ -152,30 +196,27 @@ describe('Customer Organization workspace', () => {
   });
 
   it('should get the Active Organization and Membership', async () => {
-    const session = await createVerifiedCustomerSession();
-    const slug = uniqueOrganizationSlug();
-    const created = await createOrganization(session, {
-      name: `Workspace ${slug}`,
-      slug,
-    });
+    const organizationName = `Workspace ${uniqueOrganizationSlug()}`;
+    const session = await createVerifiedCustomerSession({ organizationName });
+    const listed = await listOrganizations(session);
 
     const active = await getFullOrganization(session);
     const membership = await getActiveMember(session);
 
     expect(active.status).toBe(200);
-    expect(String(active.data.id)).toBe(String(created.data.id));
+    expect(active.data.name).toBe(organizationName);
+    expect(String(active.data.id)).toBe(String(listed.data[0].id));
     expect(membership.status).toBe(200);
     expect(membership.data.role).toBe('owner');
-    expect(String(membership.data.organizationId)).toBe(String(created.data.id));
+    expect(String(membership.data.organizationId)).toBe(
+      String(listed.data[0].id),
+    );
   });
 
-  it('should leave Active Organization unset on sign-in even when the Customer has Memberships', async () => {
-    const session = await createVerifiedCustomerSession();
-    const slug = uniqueOrganizationSlug();
-    await createOrganization(session, {
-      name: `Workspace ${slug}`,
-      slug,
-    });
+  it('should set Active Organization on sign-in when the User has a Membership', async () => {
+    const organizationName = `Workspace ${uniqueOrganizationSlug()}`;
+    const session = await createVerifiedCustomerSession({ organizationName });
+    const listed = await listOrganizations(session);
 
     await signOut(session);
     const signInRes = await signIn({
@@ -188,11 +229,15 @@ describe('Customer Organization workspace', () => {
       origin: WEB_ORIGIN,
     };
     const current = await getSession(signedIn);
-    const listed = await listOrganizations(signedIn);
+    const afterSignIn = await listOrganizations(signedIn);
 
     expect(signInRes.status).toBe(200);
-    expect(current.data.session.activeOrganizationId).toBeNull();
-    expect(listed.data).toEqual([expect.objectContaining({ slug })]);
+    expect(String(current.data.session.activeOrganizationId)).toBe(
+      String(listed.data[0].id),
+    );
+    expect(afterSignIn.data).toEqual([
+      expect.objectContaining({ name: organizationName }),
+    ]);
   });
 
   it('should reject Super Admin create-Organization via the plugin', async () => {

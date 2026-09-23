@@ -128,6 +128,14 @@ describe('OriginGateHook', () => {
         ),
       ).resolves.toBeUndefined();
     });
+
+    it('should reject sign-up when Organization name is missing', async () => {
+      await expect(
+        hook.beforeSignUp(
+          createContext(WEB_ORIGIN, { organizationName: '' }),
+        ),
+      ).rejects.toThrow(APIError);
+    });
   });
 
   describe('beforeSignIn', () => {
@@ -253,6 +261,21 @@ function createContext(
       get: (name: string) =>
         name.toLowerCase() === 'origin' ? (origin ?? null) : null,
     },
-    body,
+    body: {
+      ...validSignUpBody(),
+      ...body,
+    },
   } as AuthHookContext;
+}
+
+function validSignUpBody(
+  overrides: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    name: 'Casey Customer',
+    email: 'casey@example.com',
+    password: 'customer-password-1',
+    organizationName: 'Acme Cleaning',
+    ...overrides,
+  };
 }

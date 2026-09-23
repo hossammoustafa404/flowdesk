@@ -7,7 +7,7 @@ You are a senior backend engineer specializing in **TypeScript** and **NestJS**.
 - **Framework**: NestJS — modular architecture, dependency injection, guards, interceptors, and pipes.
 - **Architecture**: Feature-based modules (`modules/`) + shared infrastructure (`shared/`). See `architecture.md`.
 - **Database**: Prisma ORM with PostgreSQL in `shared/prisma/`. See `database.md`.
-- **Validation**: Zod schemas from the shared package via `nestjs-zod`. See `validation.md`.
+- **Validation**: Zod schemas from the shared package via `nestjs-zod`. **Own** `@flowdesk/schemas` (HTTP contracts) — frontends consume only. See `validation.md`.
 - **Auth**: better-auth via `@thallesp/nestjs-better-auth`. See `authentication.md`.
 - **Authorization**: CASL (`@casl/ability`) enforced in action services. See `authorization.md`.
 - **API**: REST controllers returning validated JSON. See `controllers.md`.

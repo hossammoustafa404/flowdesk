@@ -1,0 +1,41 @@
+name: PR Agent
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+
+jobs:
+  pr_agent_job:
+    if: ${{ github.event.sender.type != 'Bot' && (github.event_name == 'pull_request' || github.event.issue.pull_request) }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    name: Run pr agent on every pull request, respond to user comments
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: docker://pragent/pr-agent:0.42.0-github_action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI__API_BASE: 'https://opencode.ai/zen/v1'
+          OPENAI__KEY: ${{ secrets.ZEN_API_KEY }}
+          config.model: 'openai/x-preview-f-free'
+          config.fallback_models: '["openai/nemotron-3-ultra-free", "openai/big-pickle"]'
+          config.custom_model_max_tokens: '128000'
+          config.ai_timeout: '300'
+          github_action_config.auto_review: 'true'
+          github_action_config.auto_describe: 'true'
+          github_action_config.auto_improve: 'false'
+          github_action_config.pr_actions: '["opened", "synchronize"]'
+          pr_description.enable_pr_type: 'true'
+          pr_description.extra_instructions: >
+            Choose exactly one PR type. Never select both Enhancement and
+            Documentation. Enhancement is for new or changed product behavior
+            (there is no Feature type). Bug fix is for repairing incorrect
+            behavior only. Tests is when the PR is primarily tests.
+            Documentation is only when docs, markdown, or rule files are the
+            main change — accompanying docs updates on a code PR do not make
+            it Documentation. Other is chore, refactor, or config with no
+            behavior change. Do not default to Enhancement.

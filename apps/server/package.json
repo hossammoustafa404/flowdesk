@@ -1,0 +1,179 @@
+{
+  "name": "@saas-kit/server",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "tags": [
+      "type:app",
+      "scope:server"
+    ],
+    "targets": {
+      "prisma-generate": {
+        "executor": "nx:run-commands",
+        "cache": true,
+        "inputs": [
+          "{projectRoot}/src/shared/prisma/schema.prisma",
+          "{projectRoot}/prisma.config.ts"
+        ],
+        "outputs": [
+          "{projectRoot}/src/shared/prisma/generated"
+        ],
+        "options": {
+          "command": "npx prisma generate",
+          "cwd": "apps/server"
+        }
+      },
+      "prisma-migrate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma migrate dev",
+          "cwd": "apps/server"
+        }
+      },
+      "prisma-seed": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma db seed",
+          "cwd": "apps/server"
+        }
+      },
+      "prisma-studio": {
+        "continuous": true,
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma studio",
+          "cwd": "apps/server"
+        }
+      },
+      "build": {
+        "dependsOn": [
+          "prisma-generate",
+          "^build"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "webpack-cli build",
+          "env": {
+            "NODE_ENV": "production"
+          },
+          "cwd": "apps/server"
+        },
+        "configurations": {
+          "development": {
+            "env": {
+              "NODE_ENV": "development"
+            }
+          }
+        }
+      },
+      "prune-lockfile": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "executor": "@nx/js:prune-lockfile",
+        "outputs": [
+          "{workspaceRoot}/apps/server/dist/package.json",
+          "{workspaceRoot}/apps/server/dist/package-lock.json"
+        ],
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "copy-workspace-modules": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "outputs": [
+          "{workspaceRoot}/apps/server/dist/workspace_modules"
+        ],
+        "executor": "@nx/js:copy-workspace-modules",
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "prune": {
+        "dependsOn": [
+          "prune-lockfile",
+          "copy-workspace-modules"
+        ],
+        "executor": "nx:noop"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@saas-kit/server:build",
+          "runBuildTargetDependencies": true
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@saas-kit/server:build:development"
+          },
+          "production": {
+            "buildTarget": "@saas-kit/server:build:production"
+          }
+        }
+      },
+      "test": {
+        "dependsOn": [
+          "prisma-generate",
+          "^build"
+        ],
+        "options": {
+          "passWithNoTests": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@better-auth/prisma-adapter": "^1.7.1",
+    "@bull-board/api": "^9.4.0",
+    "@bull-board/express": "^9.4.0",
+    "@bull-board/nestjs": "^9.4.0",
+    "@nestjs/bullmq": "^11.0.5",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.4.7",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/api-logs": "^0.221.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.79.0",
+    "@opentelemetry/exporter-logs-otlp-proto": "^0.221.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.221.0",
+    "@opentelemetry/resources": "^2.10.0",
+    "@opentelemetry/sdk-logs": "^0.221.0",
+    "@opentelemetry/sdk-node": "^0.221.0",
+    "@opentelemetry/semantic-conventions": "^1.43.0",
+    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/client": "^7.9.0",
+    "@prisma/instrumentation": "^7.9.0",
+    "@saas-kit/schemas": "*",
+    "@thallesp/nestjs-better-auth": "^2.7.0",
+    "better-auth": "^1.7.1",
+    "bullmq": "^6.2.1",
+    "dotenv": "^16.4.7",
+    "ioredis": "^6.0.0",
+    "nestjs-zod": "^5.5.0",
+    "pg": "^8.23.0",
+    "posthog-node": "^5.51.2",
+    "reflect-metadata": "^0.2.0",
+    "resend": "^6.22.1",
+    "rxjs": "^7.8.0",
+    "swagger-ui-express": "^5.0.1",
+    "tslib": "^2.3.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0",
+    "@types/pg": "^8.23.1",
+    "prisma": "^7.9.0",
+    "tsx": "^4.23.12"
+  }
+}

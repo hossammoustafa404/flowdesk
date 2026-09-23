@@ -8,7 +8,7 @@ export function SignInView() {
   return (
     <AuthCard
       title="Welcome back"
-      description="Sign in to your Pulse workspace."
+      description="Sign in to your Flowdesk workspace."
       footer={
         <>
           Don&apos;t have an account?{' '}

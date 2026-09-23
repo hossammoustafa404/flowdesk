@@ -52,13 +52,14 @@ Priority: **P0** = must ship for portfolio MVP; **P1** = important but can follo
 ### E1-US02 — Sign-in on the correct app (P0)
 
 **As a** User  
-**I want to** sign in only on the app that matches my seat (org → `web`, Super Admin → `admin`)  
+**I want to** sign in only on the app that matches my kind of User (Organization User → `web`, Super Admin → `admin`)  
 **So that** I cannot obtain a Session from the wrong product surface.
 
 **Acceptance**
 
 - Origin-gated sign-in/Sign-up per ADR 0006.  
-- Wrong-app sign-in fails without enumerating Role via a distinct status.
+- Wrong-app sign-in fails without enumerating Role via a distinct status.  
+- **Satisfied by** existing `OriginGateHook` + `server-e2e` auth coverage (same unauthorized body as unknown credentials). This story is only the sign-in/Sign-up origin gate; post-Session wrong-app use is E1-US05; admin sign-in UI is out of scope here.
 
 ### E1-US03 — Owner invites Users with an Org Role (P0)
 

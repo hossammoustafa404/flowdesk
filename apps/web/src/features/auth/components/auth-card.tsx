@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Activity } from 'lucide-react';
+import { Workflow } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -37,7 +37,7 @@ export function AuthCard({
         className="mb-8 flex items-center gap-2 font-semibold tracking-tight"
       >
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Activity className="size-4" aria-hidden="true" />
+          <Workflow className="size-4" aria-hidden="true" />
         </div>
         <span>{PRODUCT_NAME}</span>
       </Link>

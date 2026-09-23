@@ -4,6 +4,8 @@
 **Date:** 2026-09-23  
 **Purpose:** Flagship portfolio project proving end-to-end product delivery (requirements → production-quality full stack). Not a startup validation exercise.
 
+**Backlog:** [Epics & user stories (MVP)](../product/epics-and-user-stories.md)
+
 **Target stack (intent):** Next.js, React, TypeScript, NestJS, PostgreSQL, Redis/BullMQ, Docker, CI/CD  
 **Apps:** `server` (API) · `web` (org users) · `admin` (platform super-admin)
 

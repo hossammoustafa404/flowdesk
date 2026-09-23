@@ -2,6 +2,8 @@
 
 HTTP input/output validation uses Zod schemas from `@flowdesk/schemas`. **NEVER** duplicate those API contracts in any app.
 
+**Ownership:** `@flowdesk/schemas` is a **backend responsibility**. Backend work defines, evolves, and documents HTTP Zod contracts (including `.describe()` and root `.meta({ example })`). `web` and `admin` import and consume — they do **not** add, edit, or delete shared schemas. When a form or client needs a new field, change the shared contract in backend work first.
+
 Process env is **not** an API contract. Server env schemas live in `apps/server/src/shared/config/` only. **NEVER** put `DATABASE_URL`, `BETTER_AUTH_SECRET`, or any other server secret/config schema in `@flowdesk/schemas`. Frontends must not be able to import them.
 
 ## Setup
@@ -55,6 +57,7 @@ export const CreateUserSchema = z
 | `*Input`      | Inferred request type  | `CreateUserInput`  |
 | Domain noun   | Inferred response type | `User`             |
 
+- **ALWAYS** own shared HTTP schemas from the backend. **NEVER** leave contract changes to frontend tickets.
 - Schema and its inferred type export live in the **same** `{name}.schema.ts` file in the shared package.
 - **ALWAYS** scope files by module: `packages/schemas/src/{module}/{name}.schema.ts` — e.g. `health/health.schema.ts`, `user/create-user.schema.ts`. One folder may contain multiple schema files.
 - **ALWAYS** name files `{name}.schema.ts`. **NEVER** `health.ts`, `user.ts`, or a schema file at `src/` root.

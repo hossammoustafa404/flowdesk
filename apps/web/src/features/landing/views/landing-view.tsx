@@ -17,7 +17,7 @@ function LandingContent() {
   const { messages } = useLandingLocale();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen min-w-0 flex-col overflow-x-clip">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:start-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
@@ -25,7 +25,7 @@ function LandingContent() {
         {messages.skipToContent}
       </a>
       <LandingHeader />
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="min-w-0 flex-1">
         <LandingHero />
         <LandingProblem />
         <LandingWorkflow />

@@ -13,7 +13,8 @@
 
 - Response schemas and their exported types live in the shared schemas package (e.g. `UserSchema`, `User`).
 - Request payload types also come from the shared schemas package (e.g. `CreateUserInput`).
-- **NEVER** define response schemas or parallel TypeScript interfaces in `features/`.
+- **`@flowdesk/schemas` is backend-owned.** Frontends **consume** only — **NEVER** create or modify shared Zod contracts in `web`/`admin` work. Request contract changes from backend first.
+- **NEVER** define response schemas, request Zod schemas, or parallel TypeScript interfaces in `features/`.
 - Validate responses with `.parse()` / `.safeParse()` before returning data to React Query.
 
 ## Example Pattern

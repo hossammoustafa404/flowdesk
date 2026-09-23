@@ -79,8 +79,7 @@ export function createAuth({
         },
       }),
       organization({
-        allowUserToCreateOrganization: (user) =>
-          user.role === UserRole.Customer,
+        allowUserToCreateOrganization: false,
         creatorRole: MemberRole.Owner,
         teams: {
           enabled: false,

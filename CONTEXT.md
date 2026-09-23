@@ -37,16 +37,16 @@ An Org Role that performs field work on Jobs assigned to them. A Technician sees
 _Avoid_: Tech, field worker, employee, contractor
 
 **Organization**:
-A named company workspace whose Users, Customers, and Jobs are isolated from other Organizations. Public Sign-up on the web app creates an Organization and makes that User its Owner. An Owner invites other Users. A Super Admin can list and suspend Organizations and is not required to create them. In MVP a User belongs to at most one Organization.
+A named company workspace whose Users, Customers, and Jobs are isolated from other Organizations. Public Sign-up on the web app is the only self-serve create path and makes that User its Owner. An Owner invites other Users. A Super Admin can list and suspend Organizations and is not required to create them. In MVP a User belongs to at most one Organization.
 _Avoid_: Tenant, team, company, account, workspace
 
 **Sign-up**:
-Public registration on the web app that creates a User, a new Organization, and the Owner Org Role together. Sign-up is rejected on the admin app.
-_Avoid_: Registration, onboarding, create account
+Public registration on the web app that creates a User, a new Organization, and the Owner Org Role in one successful act—before Email verification—or creates none of them. A Session still waits for Email verification. Sign-up is the only self-serve way to create an Organization; org Users cannot create another. Invitees joining an existing Organization do not use Sign-up. Sign-up is rejected on the admin app.
+_Avoid_: Registration, onboarding, create account, join
 
 **Invitation**:
-A pending ask for an email to join an existing Organization with an Org Role. Accept, reject, and get require Email verification. Invitation is how Dispatchers, Technicians, and additional Owners join; it does not create an Organization. Accept succeeds only if that email has no Organization yet.
-_Avoid_: Invite link, token, share
+A pending ask for an email to join an existing Organization with an Org Role. Accept, reject, and get require Email verification. Invitation is how Dispatchers, Technicians, and additional Owners join; it does not create an Organization. An invitee with no User yet obtains credentials through the Invitation flow—not Sign-up—so they never receive an Organization of their own before accept. Accept succeeds only if that email has no Organization yet.
+_Avoid_: Invite link, token, share, Sign-up
 
 **Job**:
 A single field-service unit of work for one Customer at one service address: intake through assign, field progress, and complete, block, or cancel. A Job belongs to exactly one Organization.
@@ -73,8 +73,12 @@ A record that the office told the Customer about a Job event without a successfu
 _Avoid_: Resend, manual notify, acknowledge, dismiss failure
 
 **Session**:
-Proof that a User is signed in. The API treats a request as that User while the Session is valid.
+Proof that a User is signed in. The API treats a request as that User while the Session is valid. For an Organization User, the Session’s Active Organization is the Organization the request is acting in; after Sign-up Email verification it is the Organization created at Sign-up.
 _Avoid_: Token, JWT, login
+
+**Active Organization**:
+Which Organization a Session is currently acting in. In MVP a User has at most one Organization, so Active Organization is that Organization once set.
+_Avoid_: Current tenant, selected workspace, membership
 
 **Email verification**:
 Proof that a User owns the email they signed up with. A User does not get a Session until Email verification succeeds. Testers finish verification by reading the queued mail job and calling Better Auth’s verify URL — they do not parse mailboxes.

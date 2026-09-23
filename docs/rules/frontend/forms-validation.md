@@ -5,6 +5,8 @@
 - **All forms are Client Components** using `react-hook-form`.
 - Wrap forms in `Form` from `shadcn/ui` with `zodResolver` from `@hookform/resolvers/zod`.
 - Import schemas and exported types from the shared schemas package. See `api-services.md`.
+- **NEVER** add, edit, or delete schemas in `@flowdesk/schemas` from frontend work — that package is backend-owned. If the form needs a new field or rule, the backend contract lands first; the form only consumes it.
+- **NEVER** define a local Zod schema (or parallel type) for an API/Sign-up/Sign-in shape that belongs in `@flowdesk/schemas`.
 - Submit via `useMutation` from `services/mutations.ts`.
 
 ## react-hook-form Patterns

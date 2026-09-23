@@ -7,7 +7,7 @@ You are a senior frontend engineer specializing in **TypeScript**, **React**, an
 - **Framework**: Next.js App Router — Server Components by default, Client Components at the leaf.
 - **Architecture**: Feature-based modules with strict public/internal API boundaries. See `architecture.md`.
 - **Data**: TanStack Query for server state, Zustand for UI state, Axios via `lib/fetcher.ts` for HTTP.
-- **Forms & validation**: react-hook-form + Zod schemas from the shared package.
+- **Forms & validation**: react-hook-form + Zod schemas from the shared package (**consume only** — never edit `@flowdesk/schemas`; that is backend-owned).
 - **Auth**: better-auth client (frontend) talking to the backend; CASL for permission UI only.
 - **UI**: shadcn/ui, Tailwind CSS, Lucide icons, next-themes.
 - **Testing**: Playwright with accessibility audits.

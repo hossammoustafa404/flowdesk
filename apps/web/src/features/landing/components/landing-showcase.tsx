@@ -49,7 +49,11 @@ export function LandingShowcase() {
             return (
               <Reveal key={item.id}>
                 <article className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-                  <div className={isReversed ? 'lg:order-2' : undefined}>
+                  <div
+                    className={
+                      isReversed ? 'min-w-0 lg:order-2' : 'min-w-0'
+                    }
+                  >
                     <p className="text-xs font-semibold tracking-[0.14em] text-primary uppercase">
                       {item.eyebrow}
                     </p>
@@ -74,7 +78,11 @@ export function LandingShowcase() {
                       ))}
                     </ul>
                   </div>
-                  <div className={isReversed ? 'lg:order-1' : undefined}>
+                  <div
+                    className={
+                      isReversed ? 'min-w-0 lg:order-1' : 'min-w-0'
+                    }
+                  >
                     <ShowcaseMock mock={item.mock} />
                   </div>
                 </article>

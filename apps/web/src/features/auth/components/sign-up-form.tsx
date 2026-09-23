@@ -33,6 +33,7 @@ export function SignUpForm() {
       name: '',
       email: '',
       password: '',
+      organizationName: '',
     },
   });
 
@@ -44,6 +45,11 @@ export function SignUpForm() {
       email: values.email,
       password: values.password,
       callbackURL: getDashboardCallbackUrl(),
+      fetchOptions: {
+        body: {
+          organizationName: values.organizationName,
+        },
+      },
     });
 
     if (error) {
@@ -121,6 +127,29 @@ export function SignUpForm() {
             </Field>
           )}
         />
+
+        <Controller
+          control={form.control}
+          name="organizationName"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="sign-up-organization-name">
+                Organization name
+              </FieldLabel>
+              <Input
+                {...field}
+                id="sign-up-organization-name"
+                type="text"
+                autoComplete="organization"
+                placeholder="Cairo Care Cleaning"
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid ? (
+                <FieldError errors={[fieldState.error]} />
+              ) : null}
+            </Field>
+          )}
+        />
       </FieldGroup>
 
       <Button
@@ -128,7 +157,7 @@ export function SignUpForm() {
         className="w-full"
         loading={form.formState.isSubmitting}
       >
-        Create account
+        Create organization
       </Button>
     </form>
   );

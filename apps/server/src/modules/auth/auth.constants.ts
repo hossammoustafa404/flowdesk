@@ -7,6 +7,8 @@ export const SUPER_ADMIN_CANNOT_HAVE_MEMBERSHIP =
 export const AUTH_BASE_PATH = '/api/auth';
 export const AUTH_DOCS_ROUTE = `${AUTH_BASE_PATH}/reference`;
 export const AUTH_EVENT_SOURCE = 'server';
+export const ORGANIZATION_SLUG_MAX_LENGTH = 48;
+export const ORGANIZATION_SLUG_FALLBACK = 'organization';
 
 export const AuthEvents = {
   UserSignedUp: 'user signed up',

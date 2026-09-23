@@ -65,7 +65,7 @@ export function LandingHero() {
 
       <div className="relative mx-auto max-w-7xl px-3 pb-12 sm:px-6 sm:pb-16 lg:px-8">
         <div
-          className="pointer-events-none absolute -inset-x-10 top-8 -z-10 h-[70%] bg-[radial-gradient(ellipse_at_center,color-mix(in_oklch,var(--primary)_14%,transparent),transparent_68%)]"
+          className="pointer-events-none absolute inset-x-0 top-8 -z-10 h-[70%] bg-[radial-gradient(ellipse_at_center,color-mix(in_oklch,var(--primary)_14%,transparent),transparent_68%)]"
           aria-hidden="true"
         />
         <p className="mb-3 text-center text-xs tracking-wide text-muted-foreground sm:text-sm">

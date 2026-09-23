@@ -47,22 +47,29 @@ export async function signUpCustomer(
     email?: string;
     name?: string;
     password?: string;
+    organizationName?: string | null;
     role?: string;
   } = {},
 ) {
-  return axios.post(
-    '/api/auth/sign-up/email',
-    {
-      name: options.name ?? 'Casey Customer',
-      email: options.email ?? uniqueCustomerEmail(),
-      password: options.password ?? 'customer-password-1',
-      ...(options.role === undefined ? {} : { role: options.role }),
-    },
-    {
-      headers: originHeaders(options.origin),
-      validateStatus: () => true,
-    },
-  );
+  const body: Record<string, string> = {
+    name: options.name ?? 'Casey Customer',
+    email: options.email ?? uniqueCustomerEmail(),
+    password: options.password ?? 'customer-password-1',
+  };
+
+  if (options.organizationName !== null) {
+    body.organizationName =
+      options.organizationName ?? 'Acme Cleaning';
+  }
+
+  if (options.role !== undefined) {
+    body.role = options.role;
+  }
+
+  return axios.post('/api/auth/sign-up/email', body, {
+    headers: originHeaders(options.origin),
+    validateStatus: () => true,
+  });
 }
 
 export async function readQueuedMailText(email: string): Promise<string> {
@@ -175,18 +182,21 @@ export async function createVerifiedCustomerSession(
     origin?: string;
     email?: string;
     password?: string;
+    organizationName?: string;
   } = {},
 ) {
   const email = options.email ?? uniqueCustomerEmail();
   const password = options.password ?? 'customer-password-1';
   const origin = options.origin ?? WEB_ORIGIN;
-  await signUpCustomer({ origin, email, password });
+  const organizationName = options.organizationName ?? 'Acme Cleaning';
+  await signUpCustomer({ origin, email, password, organizationName });
   await verifyCustomerEmail(email);
   const signInRes = await signIn({ email, password, origin });
   return {
     email,
     password,
     origin,
+    organizationName,
     cookie: cookieHeader(signInRes.headers['set-cookie']),
   };
 }

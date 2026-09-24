@@ -2,8 +2,9 @@
 
 import { ArrowRight, MapPin } from 'lucide-react';
 
-import { useLandingLocale } from '../hooks';
 import { cn } from '@/lib/utils';
+import { useMessages } from '@/hooks/use-messages';
+import { LANDING_MESSAGES } from '../messages';
 import { MockChrome, StatusPill } from './mock-chrome';
 
 const TECH_JOBS = [
@@ -32,7 +33,7 @@ const TECH_JOBS = [
 ];
 
 export function TechJobsMock() {
-  const { messages, isRtl } = useLandingLocale();
+  const { messages, isRtl } = useMessages(LANDING_MESSAGES);
   const { mocks } = messages;
 
   return (

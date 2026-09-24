@@ -5,13 +5,14 @@ import { ArrowRight } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useMessages } from '@/hooks/use-messages';
 
 import { LANDING_AUTH_HREFS, PRODUCT_NAME } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { Reveal } from './reveal';
 
 export function LandingCta() {
-  const { messages, isRtl } = useLandingLocale();
+  const { messages, isRtl, localizeHref } = useMessages(LANDING_MESSAGES);
 
   return (
     <section className="border-t border-border py-16 sm:py-24">
@@ -29,7 +30,7 @@ export function LandingCta() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
-                href={LANDING_AUTH_HREFS.signUp}
+                href={localizeHref(LANDING_AUTH_HREFS.signUp)}
                 className={cn(
                   buttonVariants({ size: 'lg' }),
                   'h-11 w-full cursor-pointer px-5 sm:w-auto',
@@ -42,7 +43,7 @@ export function LandingCta() {
                 />
               </Link>
               <Link
-                href={LANDING_AUTH_HREFS.signIn}
+                href={localizeHref(LANDING_AUTH_HREFS.signIn)}
                 className={cn(
                   buttonVariants({ size: 'lg', variant: 'outline' }),
                   'h-11 w-full cursor-pointer px-5 sm:w-auto',

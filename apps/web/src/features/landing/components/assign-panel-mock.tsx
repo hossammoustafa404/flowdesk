@@ -2,12 +2,14 @@
 
 import { AlertTriangle, Check } from 'lucide-react';
 
+import { useMessages } from '@/hooks/use-messages';
+
 import { MOCK_TECHNICIANS } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { MockChrome } from './mock-chrome';
 
 export function AssignPanelMock() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
   const { mocks } = messages;
 
   return (

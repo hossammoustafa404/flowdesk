@@ -1,12 +1,13 @@
 'use client';
 
 import { LANDING_ROLE_ICONS } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { Reveal } from './reveal';
 import { SectionHeading } from './section-heading';
+import { useMessages } from '@/hooks/use-messages';
 
 export function LandingRoles() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <section id="roles" className="scroll-mt-24 py-20 sm:py-24">

@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { organization, useSession } from '@/lib/auth-client';
+import { useLocale } from '@/providers';
 
 import { AUTH_ROUTES } from '../constants';
 import { getAuthErrorMessage } from '../utils';
@@ -27,6 +28,7 @@ export function AcceptInvitationPanel({
   invitationId,
 }: AcceptInvitationPanelProps) {
   const router = useRouter();
+  const { localizeHref } = useLocale();
   const { data: session, isPending } = useSession();
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);
   const [isLoadingInvitation, setIsLoadingInvitation] = useState(false);
@@ -92,7 +94,7 @@ export function AcceptInvitationPanel({
       }
 
       setIsComplete(true);
-      router.push(AUTH_ROUTES.dashboard);
+      router.push(localizeHref(AUTH_ROUTES.dashboard));
       router.refresh();
     } catch {
       setError('Unable to accept this invitation.');
@@ -115,7 +117,7 @@ export function AcceptInvitationPanel({
         return;
       }
 
-      router.push(AUTH_ROUTES.dashboard);
+      router.push(localizeHref(AUTH_ROUTES.dashboard));
       router.refresh();
     } catch {
       setError('Unable to reject this invitation.');
@@ -144,13 +146,17 @@ export function AcceptInvitationPanel({
         </p>
         <div className="flex flex-col gap-2 sm:flex-row">
           <Link
-            href={`${AUTH_ROUTES.signIn}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={localizeHref(
+              `${AUTH_ROUTES.signIn}?callbackUrl=${encodeURIComponent(callbackUrl)}`,
+            )}
             className={cn(buttonVariants(), 'flex-1')}
           >
             Sign in
           </Link>
           <Link
-            href={`${AUTH_ROUTES.signUp}?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={localizeHref(
+              `${AUTH_ROUTES.signUp}?callbackUrl=${encodeURIComponent(callbackUrl)}`,
+            )}
             className={cn(buttonVariants({ variant: 'outline' }), 'flex-1')}
           >
             Create account

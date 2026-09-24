@@ -1,4 +1,5 @@
-import { LandingLocale } from './enums';
+import { AppLocale } from '@/lib/locale';
+
 import type { LandingMessages } from './interfaces';
 
 const EN_MESSAGES: LandingMessages = {
@@ -675,9 +676,7 @@ const AR_MESSAGES: LandingMessages = {
   },
 };
 
-export const LANDING_MESSAGES: Record<LandingLocale, LandingMessages> = {
-  [LandingLocale.En]: EN_MESSAGES,
-  [LandingLocale.Ar]: AR_MESSAGES,
+export const LANDING_MESSAGES: Record<AppLocale, LandingMessages> = {
+  [AppLocale.En]: EN_MESSAGES,
+  [AppLocale.Ar]: AR_MESSAGES,
 };
-
-export const LANDING_LOCALE_STORAGE_KEY = 'flowdesk.landing.locale';

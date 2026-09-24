@@ -1,11 +1,12 @@
 'use client';
 
 import { MOCK_BOARD_JOBS } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { MockChrome, StatusPill, UrgencyPill } from './mock-chrome';
+import { useMessages } from '@/hooks/use-messages';
 
 export function JobsBoardMock({ compact = false }: { compact?: boolean }) {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
   const jobs = compact ? MOCK_BOARD_JOBS.slice(0, 4) : MOCK_BOARD_JOBS;
   const { mocks } = messages;
 

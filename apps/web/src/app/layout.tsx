@@ -1,8 +1,10 @@
 import './global.css';
 import { Cairo, Open_Sans, Poppins } from 'next/font/google';
+import { Suspense } from 'react';
 
-import { ThemeProvider } from '@/providers';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { LocaleProvider, ThemeProvider } from '@/providers';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -20,9 +22,11 @@ const openSans = Open_Sans({
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-arabic',
+  variable: '--font-cairo',
   display: 'swap',
 });
+
+const localeBootScript = `(function(){try{var m=location.search.match(/[?&]lang=([^&]+)/);var lang=m&&m[1]==='ar'?'ar':'en';document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';if(lang==='ar'){document.documentElement.classList.add('font-arabic');document.documentElement.classList.remove('font-sans');}else{document.documentElement.classList.add('font-sans');document.documentElement.classList.remove('font-arabic');}}catch(e){}})();`;
 
 export const metadata = {
   title: 'Flowdesk — Field-service dispatch for HVAC & plumbing',
@@ -38,6 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      dir="ltr"
       className={cn(
         poppins.variable,
         openSans.variable,
@@ -46,8 +51,17 @@ export default function RootLayout({
       )}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: localeBootScript }} />
+      </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <Suspense fallback={null}>
+            <LocaleProvider>
+              <TooltipProvider>{children}</TooltipProvider>
+            </LocaleProvider>
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

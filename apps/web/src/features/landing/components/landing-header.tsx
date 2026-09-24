@@ -4,23 +4,24 @@ import Link from 'next/link';
 import { Menu, Workflow, X } from 'lucide-react';
 import { useState } from 'react';
 
+import { LocaleToggle } from '@/components/locale-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { buttonVariants } from '@/components/ui/button';
+import { useMessages } from '@/hooks/use-messages';
 import { cn } from '@/lib/utils';
 
 import { LANDING_AUTH_HREFS, PRODUCT_NAME } from '../constants';
-import { useLandingLocale } from '../hooks';
-import { LocaleToggle } from './locale-toggle';
-import { ThemeToggle } from './theme-toggle';
+import { LANDING_MESSAGES } from '../messages';
 
 export function LandingHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages } = useLandingLocale();
+  const { messages, localizeHref } = useMessages(LANDING_MESSAGES);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
-          href="/"
+          href={localizeHref('/')}
           className="flex items-center gap-2.5 font-heading text-base font-semibold tracking-tight"
         >
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -48,7 +49,7 @@ export function LandingHeader() {
           <LocaleToggle />
           <ThemeToggle />
           <Link
-            href={LANDING_AUTH_HREFS.signIn}
+            href={localizeHref(LANDING_AUTH_HREFS.signIn)}
             className={cn(
               buttonVariants({ variant: 'ghost', size: 'sm' }),
               'hidden cursor-pointer sm:inline-flex',
@@ -57,7 +58,7 @@ export function LandingHeader() {
             {messages.actions.signIn}
           </Link>
           <Link
-            href={LANDING_AUTH_HREFS.signUp}
+            href={localizeHref(LANDING_AUTH_HREFS.signUp)}
             className={cn(
               buttonVariants({ size: 'sm' }),
               'hidden cursor-pointer sm:inline-flex',
@@ -108,14 +109,14 @@ export function LandingHeader() {
           </nav>
           <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
             <Link
-              href={LANDING_AUTH_HREFS.signIn}
+              href={localizeHref(LANDING_AUTH_HREFS.signIn)}
               className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
               onClick={() => setIsOpen(false)}
             >
               {messages.actions.signIn}
             </Link>
             <Link
-              href={LANDING_AUTH_HREFS.signUp}
+              href={localizeHref(LANDING_AUTH_HREFS.signUp)}
               className={cn(buttonVariants(), 'w-full')}
               onClick={() => setIsOpen(false)}
             >

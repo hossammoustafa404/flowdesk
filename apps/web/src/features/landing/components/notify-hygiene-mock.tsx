@@ -1,11 +1,12 @@
 'use client';
 
 import { MOCK_NOTIFY_ROWS } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { MockChrome, StatusPill } from './mock-chrome';
+import { useMessages } from '@/hooks/use-messages';
 
 export function NotifyHygieneMock() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
   const { mocks } = messages;
 
   return (

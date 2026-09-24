@@ -1,4 +1,10 @@
 import {
+  LANG_QUERY_PARAM,
+  parseLocaleParam,
+  withLang,
+} from '@/lib/locale';
+
+import {
   AUTH_ERROR_MESSAGES,
   AUTH_ROUTES,
   CHECK_EMAIL_CALLBACK_QUERY_PARAM,
@@ -21,12 +27,24 @@ export function isEmailNotVerifiedError(
   return error.code === 'EMAIL_NOT_VERIFIED' || error.status === 403;
 }
 
-export function getDashboardCallbackUrl(): string {
+function currentLocaleFromWindow() {
   if (typeof window === 'undefined') {
-    return AUTH_ROUTES.dashboard;
+    return parseLocaleParam(undefined);
   }
 
-  return `${window.location.origin}${AUTH_ROUTES.dashboard}`;
+  return parseLocaleParam(
+    new URLSearchParams(window.location.search).get(LANG_QUERY_PARAM),
+  );
+}
+
+export function getDashboardCallbackUrl(): string {
+  const path = withLang(AUTH_ROUTES.dashboard, currentLocaleFromWindow());
+
+  if (typeof window === 'undefined') {
+    return path;
+  }
+
+  return `${window.location.origin}${path}`;
 }
 
 export function resolveCallbackUrl(callbackUrl?: string): string {
@@ -38,26 +56,41 @@ export function resolveCallbackUrl(callbackUrl?: string): string {
     return callbackUrl;
   }
 
+  const localized = withLang(
+    callbackUrl.startsWith('/') ? callbackUrl : `/${callbackUrl}`,
+    currentLocaleFromWindow(),
+  );
+
   if (typeof window === 'undefined') {
-    return callbackUrl;
+    return localized;
   }
 
-  return `${window.location.origin}${callbackUrl.startsWith('/') ? callbackUrl : `/${callbackUrl}`}`;
+  return `${window.location.origin}${localized}`;
 }
 
 export function buildCheckEmailUrl(email: string, callbackUrl?: string): string {
-  const params = new URLSearchParams({
-    [CHECK_EMAIL_QUERY_PARAM]: email,
-  });
+  const locale = currentLocaleFromWindow();
+  const base = withLang(AUTH_ROUTES.checkEmail, locale);
+  const url = new URL(base, 'http://local.invalid');
 
-  if (callbackUrl && callbackUrl !== AUTH_ROUTES.dashboard) {
-    params.set(CHECK_EMAIL_CALLBACK_QUERY_PARAM, callbackUrl);
+  url.searchParams.set(CHECK_EMAIL_QUERY_PARAM, email);
+
+  const localizedDashboard = withLang(AUTH_ROUTES.dashboard, locale);
+  if (
+    callbackUrl &&
+    callbackUrl !== AUTH_ROUTES.dashboard &&
+    callbackUrl !== localizedDashboard
+  ) {
+    url.searchParams.set(CHECK_EMAIL_CALLBACK_QUERY_PARAM, callbackUrl);
   }
 
-  return `${AUTH_ROUTES.checkEmail}?${params.toString()}`;
+  const search = url.searchParams.toString();
+  return `${url.pathname}${search ? `?${search}` : ''}`;
 }
 
-export function getAuthErrorMessage(error: AuthClientError | null | undefined): string {
+export function getAuthErrorMessage(
+  error: AuthClientError | null | undefined,
+): string {
   if (!error) {
     return AUTH_ERROR_MESSAGES.DEFAULT;
   }

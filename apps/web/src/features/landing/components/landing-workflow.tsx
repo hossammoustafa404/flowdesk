@@ -1,11 +1,12 @@
 'use client';
 
-import { useLandingLocale } from '../hooks';
 import { Reveal } from './reveal';
 import { SectionHeading } from './section-heading';
+import { useMessages } from '@/hooks/use-messages';
+import { LANDING_MESSAGES } from '../messages';
 
 export function LandingWorkflow() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <section id="workflow" className="scroll-mt-24 py-20 sm:py-24">

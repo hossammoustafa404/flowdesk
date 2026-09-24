@@ -1,5 +1,7 @@
 'use client';
 
+import { useMessages } from '@/hooks/use-messages';
+
 import {
   LandingCta,
   LandingFaq,
@@ -11,10 +13,10 @@ import {
   LandingShowcase,
   LandingWorkflow,
 } from '../components';
-import { LandingLocaleProvider, useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 
-function LandingContent() {
-  const { messages } = useLandingLocale();
+export function LandingView() {
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <div className="flex min-h-screen min-w-0 flex-col overflow-x-clip">
@@ -36,13 +38,5 @@ function LandingContent() {
       </main>
       <LandingFooter />
     </div>
-  );
-}
-
-export function LandingView() {
-  return (
-    <LandingLocaleProvider>
-      <LandingContent />
-    </LandingLocaleProvider>
   );
 }

@@ -5,13 +5,14 @@ import { ArrowRight } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useMessages } from '@/hooks/use-messages';
 
 import { LANDING_AUTH_HREFS, PRODUCT_NAME } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 import { JobsBoardMock } from './jobs-board-mock';
 
 export function LandingHero() {
-  const { messages, isRtl } = useLandingLocale();
+  const { messages, isRtl, localizeHref } = useMessages(LANDING_MESSAGES);
 
   return (
     <section className="relative overflow-hidden">
@@ -38,7 +39,7 @@ export function LandingHero() {
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href={LANDING_AUTH_HREFS.signUp}
+              href={localizeHref(LANDING_AUTH_HREFS.signUp)}
               className={cn(
                 buttonVariants({ size: 'lg' }),
                 'h-11 w-full cursor-pointer px-5 sm:w-auto',

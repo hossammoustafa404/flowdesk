@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
+
+import { LocalizedLink } from '@/components/localized-link';
 
 import { AuthCard, RedirectIfAuthenticated, SignUpForm } from '../components';
 import { AUTH_ROUTES } from '../constants';
@@ -12,9 +13,12 @@ export function SignUpView() {
       footer={
         <>
           Already have an account?{' '}
-          <Link href={AUTH_ROUTES.signIn} className="font-medium text-foreground underline-offset-4 hover:underline">
+          <LocalizedLink
+            href={AUTH_ROUTES.signIn}
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
             Sign in
-          </Link>
+          </LocalizedLink>
         </>
       }
     >

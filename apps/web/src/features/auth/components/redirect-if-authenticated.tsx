@@ -4,18 +4,20 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useSession } from '@/lib/auth-client';
+import { useLocale } from '@/providers';
 
 import { AUTH_ROUTES } from '../constants';
 
 export function RedirectIfAuthenticated() {
   const router = useRouter();
+  const { localizeHref } = useLocale();
   const { data: session, isPending } = useSession();
 
   useEffect(() => {
     if (!isPending && session) {
-      router.replace(AUTH_ROUTES.dashboard);
+      router.replace(localizeHref(AUTH_ROUTES.dashboard));
     }
-  }, [isPending, router, session]);
+  }, [isPending, localizeHref, router, session]);
 
   return null;
 }

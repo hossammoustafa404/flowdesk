@@ -1,12 +1,13 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { useMessages } from '@/hooks/use-messages';
+import { LANDING_MESSAGES } from '../messages';
 
-import { useLandingLocale } from '../hooks';
 import { MockChrome, StatusPill } from './mock-chrome';
 
 export function OwnerDashboardMock() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
   const { mocks } = messages;
 
   const metrics = [

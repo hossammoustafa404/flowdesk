@@ -3,16 +3,17 @@
 import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+import { useMessages } from '@/hooks/use-messages';
 
 import type { MockJobRow } from '../constants';
-import { useLandingLocale } from '../hooks';
+import { LANDING_MESSAGES } from '../messages';
 
 export function StatusPill({
   status,
 }: {
   status: MockJobRow['status'] | 'Cancelled' | 'pending' | 'sent' | 'failed';
 }) {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <span
@@ -40,7 +41,7 @@ export function UrgencyPill({
 }: {
   urgency: MockJobRow['urgency'];
 }) {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <span
@@ -67,7 +68,7 @@ export function MockChrome({
   children: ReactNode;
   className?: string;
 }) {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <div

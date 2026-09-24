@@ -1,12 +1,13 @@
 'use client';
 
-import { useLandingLocale } from '../hooks';
 import { AssignPanelMock } from './assign-panel-mock';
 import { NotifyHygieneMock } from './notify-hygiene-mock';
 import { OwnerDashboardMock } from './owner-dashboard-mock';
 import { Reveal } from './reveal';
 import { SectionHeading } from './section-heading';
 import { TechJobsMock } from './tech-jobs-mock';
+import { useMessages } from '@/hooks/use-messages';
+import { LANDING_MESSAGES } from '../messages';
 
 function ShowcaseMock({
   mock,
@@ -26,7 +27,7 @@ function ShowcaseMock({
 }
 
 export function LandingShowcase() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <section

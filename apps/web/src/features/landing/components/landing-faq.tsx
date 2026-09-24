@@ -1,11 +1,13 @@
 'use client';
 
-import { useLandingLocale } from '../hooks';
+import { useMessages } from '@/hooks/use-messages';
+
+import { LANDING_MESSAGES } from '../messages';
 import { Reveal } from './reveal';
 import { SectionHeading } from './section-heading';
 
 export function LandingFaq() {
-  const { messages } = useLandingLocale();
+  const { messages } = useMessages(LANDING_MESSAGES);
 
   return (
     <section

@@ -79,7 +79,14 @@ export function createAuth({
         },
       }),
       organization({
-        allowUserToCreateOrganization: false,
+        allowUserToCreateOrganization: (user) => {
+          const role = typeof user.role === 'string' ? user.role : undefined;
+          if (role === UserRole.SuperAdmin) {
+            return false;
+          }
+
+          return user.emailVerified !== false;
+        },
         creatorRole: MemberRole.Owner,
         teams: {
           enabled: false,

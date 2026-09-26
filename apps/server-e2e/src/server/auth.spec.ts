@@ -6,6 +6,7 @@ import {
   SEED_ADMIN_PASSWORD,
   WEB_ORIGIN,
   cookieHeader,
+  getSession,
   hasSessionCookie,
   signIn,
   signUpCustomer,
@@ -84,19 +85,24 @@ describe('Email verification', () => {
     expect(hasSessionCookie(beforeVerify.headers['set-cookie'])).toBe(false);
   });
 
-  it('should let a Customer sign in from the web origin after verifying via the database token', async () => {
+  it('should sign the Customer in when Email verification succeeds', async () => {
     const email = uniqueCustomerEmail();
     const password = 'customer-password-1';
     await signUpCustomer({ origin: WEB_ORIGIN, email, password });
 
     const verify = await verifyCustomerEmail(email);
     expect(verify.status).toBe(200);
-    expect(hasSessionCookie(verify.headers['set-cookie'])).toBe(false);
+    expect(hasSessionCookie(verify.headers['set-cookie'])).toBe(true);
 
-    const res = await signIn({ email, password, origin: WEB_ORIGIN });
+    const session = {
+      cookie: cookieHeader(verify.headers['set-cookie']),
+      origin: WEB_ORIGIN,
+    };
+    const current = await getSession(session);
 
-    expect(res.status).toBe(200);
-    expect(hasSessionCookie(res.headers['set-cookie'])).toBe(true);
+    expect(current.status).toBe(200);
+    expect(current.data.user.email).toBe(email);
+    expect(current.data.session.activeOrganizationId).toBeNull();
   });
 
   it('should let a Customer sign in from tooling after Email verification', async () => {

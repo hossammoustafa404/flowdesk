@@ -23,7 +23,7 @@ export function createOrganization(
   session: AuthSession,
   body: {
     name: string;
-    slug: string;
+    slug?: string;
     keepCurrentActiveOrganization?: boolean;
   },
 ) {

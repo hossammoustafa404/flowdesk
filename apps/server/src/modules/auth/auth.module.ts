@@ -8,9 +8,10 @@ import { MailModule } from '../../shared/mail/mail.module';
 import { ObservabilityModule } from '../../shared/observability/observability.module';
 import { ObservabilityService } from '../../shared/observability/services';
 import { PrismaService } from '../../shared/prisma/prisma.service';
+import { ActiveOrganizationHook } from './hooks/active-organization.hook';
 import { AuthEventsHook } from './hooks/auth-events.hook';
+import { CreateOrganizationHook } from './hooks/create-organization.hook';
 import { OriginGateHook } from './hooks/origin-gate.hook';
-import { SignUpOrganizationHook } from './hooks/sign-up-organization.hook';
 import { createAuth } from './lib/auth';
 
 @Module({
@@ -18,11 +19,7 @@ import { createAuth } from './lib/auth';
     ObservabilityModule,
     BetterAuthModule.forRootAsync({
       imports: [MailModule, ObservabilityModule],
-      inject: [
-        PrismaService,
-        getQueueToken(MAIL_QUEUE),
-        ObservabilityService,
-      ],
+      inject: [PrismaService, getQueueToken(MAIL_QUEUE), ObservabilityService],
       useFactory: (
         prisma: PrismaService,
         mailQueue: Queue<MailJob>,
@@ -37,6 +34,11 @@ import { createAuth } from './lib/auth';
       }),
     }),
   ],
-  providers: [OriginGateHook, SignUpOrganizationHook, AuthEventsHook],
+  providers: [
+    OriginGateHook,
+    ActiveOrganizationHook,
+    CreateOrganizationHook,
+    AuthEventsHook,
+  ],
 })
 export class AuthModule {}

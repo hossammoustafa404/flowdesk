@@ -7,7 +7,7 @@ export const SignUpSchema = z
       .trim()
       .min(1, 'Name is required')
       .max(100, 'Name must be at most 100 characters')
-      .describe('Full name of the aspiring Owner'),
+      .describe('Full name of the User'),
     email: z
       .email('Enter a valid email address')
       .describe('Email address used for Sign-up and verification'),
@@ -16,20 +16,22 @@ export const SignUpSchema = z
       .min(8, 'Password must be at least 8 characters')
       .max(128, 'Password must be at most 128 characters')
       .describe('Password for the new User'),
-    organizationName: z
+    confirmPassword: z
       .string()
-      .trim()
-      .min(1, 'Organization name is required')
-      .max(100, 'Organization name must be at most 100 characters')
-      .describe('Display name for the Organization created at Sign-up'),
+      .min(1, 'Confirm your password')
+      .describe('Confirmation of the password'),
   })
-  .describe('Owner Sign-up details including Organization name')
+  .refine((values) => values.password === values.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  })
+  .describe('Sign-up details for a User')
   .meta({
     example: {
       name: 'Ahmed Hassan',
       email: 'ahmed.hassan@example.com',
       password: 'customer-password-1',
-      organizationName: 'Cairo Care Cleaning',
+      confirmPassword: 'customer-password-1',
     },
   });
 

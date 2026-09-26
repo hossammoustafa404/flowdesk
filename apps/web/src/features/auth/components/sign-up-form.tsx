@@ -33,7 +33,7 @@ export function SignUpForm() {
       name: '',
       email: '',
       password: '',
-      organizationName: '',
+      confirmPassword: '',
     },
   });
 
@@ -47,7 +47,7 @@ export function SignUpForm() {
       callbackURL: getDashboardCallbackUrl(),
       fetchOptions: {
         body: {
-          organizationName: values.organizationName,
+          confirmPassword: values.confirmPassword,
         },
       },
     });
@@ -130,18 +130,18 @@ export function SignUpForm() {
 
         <Controller
           control={form.control}
-          name="organizationName"
+          name="confirmPassword"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="sign-up-organization-name">
-                Organization name
+              <FieldLabel htmlFor="sign-up-confirm-password">
+                Confirm password
               </FieldLabel>
               <Input
                 {...field}
-                id="sign-up-organization-name"
-                type="text"
-                autoComplete="organization"
-                placeholder="Cairo Care Cleaning"
+                id="sign-up-confirm-password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Repeat your password"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid ? (
@@ -157,7 +157,7 @@ export function SignUpForm() {
         className="w-full"
         loading={form.formState.isSubmitting}
       >
-        Create organization
+        Sign up
       </Button>
     </form>
   );

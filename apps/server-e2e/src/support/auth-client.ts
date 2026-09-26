@@ -47,19 +47,21 @@ export async function signUpCustomer(
     email?: string;
     name?: string;
     password?: string;
-    organizationName?: string | null;
+    confirmPassword?: string;
+    organizationName?: string;
     role?: string;
   } = {},
 ) {
+  const password = options.password ?? 'customer-password-1';
   const body: Record<string, string> = {
     name: options.name ?? 'Casey Customer',
     email: options.email ?? uniqueCustomerEmail(),
-    password: options.password ?? 'customer-password-1',
+    password,
+    confirmPassword: options.confirmPassword ?? password,
   };
 
-  if (options.organizationName !== null) {
-    body.organizationName =
-      options.organizationName ?? 'Acme Cleaning';
+  if (options.organizationName !== undefined) {
+    body.organizationName = options.organizationName;
   }
 
   if (options.role !== undefined) {
@@ -182,23 +184,41 @@ export async function createVerifiedCustomerSession(
     origin?: string;
     email?: string;
     password?: string;
-    organizationName?: string;
+    organizationName?: string | null;
   } = {},
 ) {
   const email = options.email ?? uniqueCustomerEmail();
   const password = options.password ?? 'customer-password-1';
   const origin = options.origin ?? WEB_ORIGIN;
-  const organizationName = options.organizationName ?? 'Acme Cleaning';
-  await signUpCustomer({ origin, email, password, organizationName });
+  const organizationName =
+    options.organizationName === undefined
+      ? 'Acme Cleaning'
+      : options.organizationName;
+  await signUpCustomer({ origin, email, password });
   await verifyCustomerEmail(email);
   const signInRes = await signIn({ email, password, origin });
-  return {
+  const session = {
     email,
     password,
     origin,
     organizationName,
     cookie: cookieHeader(signInRes.headers['set-cookie']),
   };
+
+  if (organizationName !== null) {
+    const created = await axios.post(
+      '/api/auth/organization/create',
+      { name: organizationName },
+      authRequest(session),
+    );
+    if (created.status !== 200) {
+      throw new Error(
+        `Failed to create Organization (${created.status}): ${JSON.stringify(created.data)}`,
+      );
+    }
+  }
+
+  return session;
 }
 
 export function authRequest(session: AuthSession) {

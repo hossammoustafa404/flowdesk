@@ -20,4 +20,5 @@ export const AuthPaths = {
   SignUpEmail: '/sign-up/email',
   SignInEmail: '/sign-in/email',
   SignOut: '/sign-out',
+  CreateOrganization: '/organization/create',
 } as const;

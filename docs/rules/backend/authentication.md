@@ -28,7 +28,8 @@ src/
         │   └── http-observability.plugin.ts  # incoming and outgoing HTTP logs for auth routes
         └── hooks/
             ├── origin-gate.hook.ts
-            ├── sign-up-organization.hook.ts
+            ├── active-organization.hook.ts
+            ├── create-organization.hook.ts
             └── auth-events.hook.ts
 ```
 

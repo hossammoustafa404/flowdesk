@@ -8,8 +8,8 @@ import { AUTH_ROUTES } from '../constants';
 export function SignUpView() {
   return (
     <AuthCard
-      title="Create your organization"
-      description="Enter your details and Organization name. We will email a verification link and sign you in once it is confirmed."
+      title="Create your account"
+      description="Enter your name, email, and password. We will email a verification link that signs you in."
       footer={
         <>
           Already have an account?{' '}
